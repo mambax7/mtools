@@ -1,0 +1,8 @@
+CREDITS
+=============
+
+Originally created by Michael Beck (aka Mamba): https://github.com/mambax7
+
+Inspirations from TadTools: https://github.com/tad0616/tadtools
+
+
