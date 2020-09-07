@@ -27,7 +27,7 @@ use XoopsModules\Mtools;
  *
  * @return bool true if ready to uninstall, false if not
  */
-function xoops_module_pre_uninstall_xxxx(\XoopsModule $module)
+function xoops_module_pre_uninstall_mtools(\XoopsModule $module)
 {
     // Do some synchronization if needed
     return true;
@@ -39,7 +39,7 @@ function xoops_module_pre_uninstall_xxxx(\XoopsModule $module)
  *
  * @return bool true if uninstallation successful, false if not
  */
-function xoops_module_uninstall_xxxx(\XoopsModule $module)
+function xoops_module_uninstall_mtools(\XoopsModule $module)
 {
     require __DIR__ . '/common.php';
     $moduleDirName      = basename(dirname(__DIR__));

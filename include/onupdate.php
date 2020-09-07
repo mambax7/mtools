@@ -41,7 +41,7 @@ function tableExists($tablename)
  * @param \XoopsModule $module {@link XoopsModule}
  * @return bool true if ready to install, false if not
  */
-function xoops_module_pre_update_xxxx(\XoopsModule $module)
+function xoops_module_pre_update_mtools(\XoopsModule $module)
 {
     $moduleDirName = basename(dirname(__DIR__));
     /** @var Mtools\Helper $helper */
@@ -65,7 +65,7 @@ function xoops_module_pre_update_xxxx(\XoopsModule $module)
  *
  * @return bool true if update successful, false if not
  */
-function xoops_module_update_xxxx(\XoopsModule $module, $previousVersion = null)
+function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = null)
 {
     $moduleDirName      = basename(dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
@@ -79,18 +79,6 @@ function xoops_module_update_xxxx(\XoopsModule $module, $previousVersion = null)
     $helper->loadLanguage('common');
 
     if ($previousVersion < 240) {
-        //rename column EXAMPLE
-        $tables     = new Tables();
-        $table      = 'xxxx_categories';
-        $column     = 'order';
-        $newName    = 'order';
-        $attributes = "INT(5) NOT NULL DEFAULT '0'";
-        if ($tables->useTable($table)) {
-            $tables->alterColumn($table, $column, $attributes, $newName);
-            if (!$tables->executeQueue()) {
-                echo '<br>' . constant('CO_' . $moduleDirNameUpper . '_UPGRADEFAILED0') . ' ' . $migrate->getLastError();
-            }
-        }
 
         //delete old HTML templates
         if (count($configurator->templateFolders) > 0) {
