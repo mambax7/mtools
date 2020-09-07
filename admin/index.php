@@ -18,12 +18,12 @@
 
 use Xmf\Module\Admin;
 
-require __DIR__ . '/header.php';
+require __DIR__ . '/admin_header.php';
 
 $adminObject = Admin::getInstance();
 
 $adminObject->displayNavigation(basename(__FILE__));
 $adminObject->displayIndex();
 
-require __DIR__ . '/footer.php';
+require __DIR__ . '/admin_footer.php';
 xoops_cp_footer();
