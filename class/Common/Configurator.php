@@ -44,7 +44,7 @@ class Configurator
     /**
      * Configurator constructor.
      */
-    public function __construct()
+    public function __construct($dir)
     {
         //        $moduleDirName      = basename(dirname(dirname(__DIR__)));
         //        $moduleDirNameUpper = mb_strtoupper($moduleDirName);
@@ -52,7 +52,7 @@ class Configurator
         //        require dirname(dirname(__DIR__)) . '/config/config.php';
         //        $config = getConfig();
 
-        $config = require \dirname(\dirname(__DIR__)) . '/config/config.php';
+        $config = require $dir . '/config/config.php';
 
         $this->name            = $config->name;
         $this->paths           = $config->paths;
@@ -66,7 +66,7 @@ class Configurator
         $this->moduleStats     = $config->moduleStats;
         $this->modCopyright    = $config->modCopyright;
 
-        $this->icons = require \dirname(\dirname(__DIR__)) . '/config/icons.php';
-        $this->paths = require \dirname(\dirname(__DIR__)) . '/config/paths.php';
+        $this->icons = require $dir . '/config/icons.php';
+        $this->paths = require $dir . '/config/paths.php';
     }
 }

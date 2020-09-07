@@ -38,7 +38,7 @@ class Migrate extends \Xmf\Database\Migrate
         if (null !== $configurator) {
             $this->renameTables = $configurator->renameTables;
 
-            $moduleDirName = \basename(\dirname(\dirname(__DIR__)));
+            $moduleDirName = $configurator->paths->paths['dirname'];
             parent::__construct($moduleDirName);
         }
     }
@@ -77,23 +77,11 @@ class Migrate extends \Xmf\Database\Migrate
     }
 
     /**
-     * Move do* columns from newbb_posts to newbb_posts_text table
+     * Move columns to another table
      */
     private function moveDoColumns()
     {
-        $tableName    = 'newbb_posts_text';
-        $srcTableName = 'newbb_posts';
-        if ($this->tableHandler->useTable($tableName)
-            && $this->tableHandler->useTable($srcTableName)) {
-            $attributes = $this->tableHandler->getColumnAttributes($tableName, 'dohtml');
-            if (false === $attributes) {
-                $this->synchronizeTable($tableName);
-                $updateTable = $GLOBALS['xoopsDB']->prefix($tableName);
-                $joinTable   = $GLOBALS['xoopsDB']->prefix($srcTableName);
-                $sql         = "UPDATE `$updateTable` t1 INNER JOIN `$joinTable` t2 ON t1.post_id = t2.post_id \n" . "SET t1.dohtml = t2.dohtml,  t1.dosmiley = t2.dosmiley, t1.doxcode = t2.doxcode\n" . '  , t1.doimage = t2.doimage, t1.dobr = t2.dobr';
-                $this->tableHandler->addToQueue($sql);
-            }
-        }
+        //for an example, see newbb 5.0
     }
 
     /**
@@ -105,12 +93,14 @@ class Migrate extends \Xmf\Database\Migrate
      */
     protected function preSyncActions()
     {
-        // change 'bb' table prefix to 'newbb'
+        // change table prefix
+        if ($this->renameTables && \is_array($this->renameTables)) {
         $this->changePrefix();
-        // columns dohtml, dosmiley, doxcode, doimage and dobr moved between tables as some point
-        $this->moveDoColumns();
-        // Convert IP address columns from int to readable varchar(45) for IPv6
-        $this->convertIPAddresses('newbb_posts', 'poster_ip');
-        $this->convertIPAddresses('newbb_report', 'reporter_ip');
+        }
+        //        // columns dohtml, dosmiley, doxcode, doimage and dobr moved between tables as some point
+        //        $this->moveDoColumns();
+        //        // Convert IP address columns from int to readable varchar(45) for IPv6
+        //        $this->convertIPAddresses('extgallery_posts', 'poster_ip');
+        //        $this->convertIPAddresses('extgallery_report', 'reporter_ip');
     }
 }
