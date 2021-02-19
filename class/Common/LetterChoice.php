@@ -123,8 +123,8 @@ class LetterChoice
 
         foreach ($this->alphabet as $letter) {
             $letter_array = [];
+            $letter_array['letter'] = $letter;
             if (!$this->caseSensitive) {
-                $letter_array['letter'] = $letter;
                 if (isset($countsByLetters[strtoupper($letter)])) {
                     $letter_array['count']  = $countsByLetters[strtoupper($letter)];
                     $letter_array['url']    = $this->url . '?' . $this->arg_name . '=' . $letter . $this->extra;
@@ -133,7 +133,6 @@ class LetterChoice
                     $letter_array['url']    = '';
                 }
             } else {
-                $letter_array['letter'] = $letter;
                 if (isset($countsByLetters[$letter])) {
                     $letter_array['count']  = $countsByLetters[$letter];
                     $letter_array['url']    = $this->url . '?' . $this->arg_name . '=' . $letter . $this->extra;
