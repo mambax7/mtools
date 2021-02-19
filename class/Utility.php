@@ -313,7 +313,7 @@ class Utility extends Common\SysUtility
     }
 
     //載入 bootstrap，目前僅後台用得到
-    public static function get_bootstrap($mode = ''): ?string
+    public static function get_bootstrap($mode = '')
     {
         global $xoopsConfig, $xoopsDB, $xoTheme, $xoopsTpl;
 
