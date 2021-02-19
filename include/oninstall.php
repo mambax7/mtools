@@ -31,7 +31,6 @@ function xoops_module_pre_install_mtools(\XoopsModule $module)
 {
     //    require  dirname(__DIR__) . '/preloads/autoloader.php';
     require __DIR__ . '/common.php';
-    /** @var \XoopsModules\Mtools\Utility $utility */
     $utility = new \XoopsModules\Mtools\Utility();
     //check for minimum XOOPS version
     $xoopsSuccess = $utility::checkVerXoops($module);

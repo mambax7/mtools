@@ -7,9 +7,9 @@ $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
 // ------------------- Informations -------------------
 $modversion = [
-    'version'             => 0.1,
+    'version'             => 1.1,
     'module_status'       => 'Beta 1',
-    'release_date'        => '2020/09/05',
+    'release_date'        => '2021/02/19',
     'name'                => _MI_MTOOLS_NAME,
     'description'         => _MI_MTOOLS_DESC,
     'official'            => 0,    //1 indicates official XOOPS module supported by XOOPS Dev Team, 0 means 3rd party supported

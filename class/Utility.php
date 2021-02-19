@@ -67,9 +67,9 @@ class Utility extends Common\SysUtility
         if ($mode == "return") {
             if ($ver >= 20509) {
                 return "<script src='" . XOOPS_URL . "/modules/mtools/jquery/jquery-migrate-3.0.0.min.js'></script>";
-            } else {
-                return "<script src='" . XOOPS_URL . "/modules/mtools/jquery/jquery-migrate-1.4.1.min.js'></script>";
             }
+
+            return "<script src='" . XOOPS_URL . "/modules/mtools/jquery/jquery-migrate-1.4.1.min.js'></script>";
         } else {
             if ($ver >= 20509) {
                 $xoTheme->addScript('modules/mtools/jquery/jquery-migrate-3.0.0.min.js');
@@ -106,7 +106,7 @@ class Utility extends Common\SysUtility
                 if (empty($ver)) {
                     $sql = "select version from `" . $xoopsDB->prefix("modules") . "` where dirname='{$type}'";
                     $result = $xoopsDB->query($sql) or self::web_error($sql, __FILE__, __LINE__);
-                    list($ver) = $xoopsDB->fetchRow($result);
+                    [$ver] = $xoopsDB->fetchRow($result);
                     for ($i = 0; $i < strlen($ver); $i++) {
                         $version[] = substr($ver, $i, 1);
                     }
@@ -325,7 +325,7 @@ class Utility extends Common\SysUtility
 
         $result = $xoopsDB->query($sql) or redirect_header($_SERVER['PHP_SELF'], 3, $xoopsDB->error() . '<br>' . __FILE__ . ':' . __LINE__);
 
-        list($tt_use_bootstrap, $tt_bootstrap_color, $tt_theme_kind) = $xoopsDB->fetchRow($result);
+        [$tt_use_bootstrap, $tt_bootstrap_color, $tt_theme_kind] = $xoopsDB->fetchRow($result);
 
         $_SESSION['theme_kind'] = $tt_theme_kind;
         $_SESSION[$theme_set]['bootstrap_version'] = $tt_theme_kind;
@@ -577,7 +577,7 @@ class Utility extends Common\SysUtility
 
         $vars = explode('&', $var[1]);
         foreach ($vars as $v) {
-            list($key, $val) = explode('=', $v);
+            [$key, $val] = explode('=', $v);
             if ('loadtime' === $key) {
                 continue;
             }
@@ -601,9 +601,11 @@ class Utility extends Common\SysUtility
     {
         if ($DBV == $NEED_V) {
             return $return;
-        } elseif (empty($DBV) && '1' == $defaul) {
-            return $return;
         }
+
+if (empty($DBV) && '1' == $defaul) {
+    return $return;
+}
 
         return '';
     }
@@ -613,9 +615,11 @@ class Utility extends Common\SysUtility
     {
         if (in_array($NEED_V, $default_array)) {
             return 'checked';
-        } elseif (empty($default_array) && '1' == $default) {
-            return 'checked';
         }
+
+if (empty($default_array) && '1' == $default) {
+    return 'checked';
+}
 
         return '';
     }
@@ -639,7 +643,7 @@ class Utility extends Common\SysUtility
         }
         if (empty($perm_name)) {
             $perm_name = $xoopsModule->dirname();
-        };
+        }
         //取得群組權限功能
         $gperm_handler = xoops_getHandler('groupperm');
 
@@ -754,7 +758,7 @@ class Utility extends Common\SysUtility
                 $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 break;
         }
-        list($usec, $sec) = explode(' ', microtime());
+        [$usec, $sec] = explode(' ', microtime());
         $seed = (float) $sec + ((float) $usec * 100000);
         // die('seed=' . $seed);
         mt_srand($seed);
@@ -989,15 +993,15 @@ class Utility extends Common\SysUtility
             }
 
             return $jquery_path;
-        } else {
-            $xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
+        }
+
+$xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
 
             if ($ui) {
                 $xoTheme->addStylesheet("modules/mtools/jquery/themes/{$theme}/jquery.ui.all.css");
                 $xoTheme->addScript('browse.php?Frameworks/jquery/plugins/jquery.ui.js');
                 $xoTheme->addScript('modules/mtools/jquery/jquery.ui.touch-punch.min.js');
             }
-        }
     }
 
     public static function mobile_device_detect($iphone = true, $ipad = true, $android = true, $opera = true, $blackberry = true, $palm = true, $windows = true, $mobileredirect = false, $desktopredirect = false)

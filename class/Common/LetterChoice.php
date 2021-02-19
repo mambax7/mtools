@@ -52,11 +52,11 @@ class LetterChoice
      * Constructor
      *
      * @param \XoopsPersistableObjectHandler $objHandler {@link \XoopsPersistableObjectHandler}
-     * @param \CriteriaElement               $criteria   {@link \CriteriaElement}
-     * @param string                         $field_name search by field
+     * @param null                           $criteria   {@link \CriteriaElement}
+     * @param null                           $field_name search by field
      * @param array                          $alphabet   array of alphabet letters
      * @param string                         $arg_name   item on the current page
-     * @param string                         $url
+     * @param null                           $url
      * @param string                         $extra_arg  Additional arguments to pass in the URL
      * @param bool                           $caseSensitive
      */
@@ -124,22 +124,20 @@ class LetterChoice
         foreach ($this->alphabet as $letter) {
             $letter_array = [];
             if (!$this->caseSensitive) {
+                $letter_array['letter'] = $letter;
                 if (isset($countsByLetters[strtoupper($letter)])) {
-                    $letter_array['letter'] = $letter;
                     $letter_array['count']  = $countsByLetters[strtoupper($letter)];
                     $letter_array['url']    = $this->url . '?' . $this->arg_name . '=' . $letter . $this->extra;
                 } else {
-                    $letter_array['letter'] = $letter;
                     $letter_array['count']  = 0;
                     $letter_array['url']    = '';
                 }
             } else {
+                $letter_array['letter'] = $letter;
                 if (isset($countsByLetters[$letter])) {
-                    $letter_array['letter'] = $letter;
                     $letter_array['count']  = $countsByLetters[$letter];
                     $letter_array['url']    = $this->url . '?' . $this->arg_name . '=' . $letter . $this->extra;
                 } else {
-                    $letter_array['letter'] = $letter;
                     $letter_array['count']  = 0;
                     $letter_array['url']    = '';
                 }

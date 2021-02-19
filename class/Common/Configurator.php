@@ -43,6 +43,7 @@ class Configurator
 
     /**
      * Configurator constructor.
+     * @param $dir
      */
     public function __construct($dir)
     {

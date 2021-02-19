@@ -60,6 +60,7 @@ class Breadcrumb
 
     /**
      * Render BreadCrumb
+     * @return array|bool|mixed|string|string[]|void
      */
     public function render()
     {

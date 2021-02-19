@@ -14,7 +14,7 @@
  * @author          Michael Beck (aka Mamba)
  */
 
-use \Xmf\Request;
+use Xmf\Request;
 use XoopsModules\Mtools\{
     Helper,
     Common,
@@ -42,7 +42,7 @@ switch ($op) {
             loadSampleData();
         } else {
             xoops_cp_header();
-            xoops_confirm(['ok' => 1, 'op' => 'load'], 'index.php', sprintf(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA_OK')), constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'), true);
+            xoops_confirm(['ok' => 1, 'op' => 'load'], 'index.php', constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA_CONFIRM'), constant('CO_' . $moduleDirNameUpper . '_' . 'CONFIRM'), true);
             xoops_cp_footer();
         }
         break;

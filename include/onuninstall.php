@@ -45,7 +45,6 @@ function xoops_module_uninstall_mtools(\XoopsModule $module)
     $moduleDirName      = basename(dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-    /** @var Mtools\Helper $helper */
     $helper  = Mtools\Helper::getInstance();
     $utility = new Mtools\Utility();
     //    $configurator = new Mtools\Common\Configurator();
