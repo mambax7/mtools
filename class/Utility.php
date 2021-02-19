@@ -70,12 +70,12 @@ class Utility extends Common\SysUtility
             }
 
             return "<script src='" . XOOPS_URL . "/modules/mtools/jquery/jquery-migrate-1.4.1.min.js'></script>";
+        }
+
+        if ($ver >= 20509) {
+            $xoTheme->addScript('modules/mtools/jquery/jquery-migrate-3.0.0.min.js');
         } else {
-            if ($ver >= 20509) {
-                $xoTheme->addScript('modules/mtools/jquery/jquery-migrate-3.0.0.min.js');
-            } else {
-                $xoTheme->addScript('modules/mtools/jquery/jquery-migrate-1.4.1.min.js');
-            }
+            $xoTheme->addScript('modules/mtools/jquery/jquery-migrate-1.4.1.min.js');
         }
     }
 
