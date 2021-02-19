@@ -94,7 +94,7 @@ class LetterChoice
      * @param null|int $howmanyother
      * @return string
      */
-    public function render($alphaCount = null, $howmanyother = null)
+    public function render($alphaCount = null, $howmanyother = null): string
     {
         $moduleDirName      = basename(dirname(__DIR__, 2));
         $moduleDirNameUpper = mb_strtoupper($moduleDirName);

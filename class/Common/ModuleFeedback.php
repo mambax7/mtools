@@ -46,7 +46,7 @@ class ModuleFeedback extends \XoopsObject
      *
      * @param null
      */
-    public static function getInstance()
+    public static function getInstance(): void
     {
         static $instance = false;
         if (!$instance) {
@@ -60,7 +60,7 @@ class ModuleFeedback extends \XoopsObject
      * @param bool $action
      * @return \XoopsThemeForm
      */
-    public function getFormFeedback($action = false)
+    public function getFormFeedback($action = false): \XoopsThemeForm
     {
         if (false === $action) {
             $action = $_SERVER['REQUEST_URI'];

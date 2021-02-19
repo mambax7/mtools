@@ -101,7 +101,7 @@ class DirectoryChecker
      *
      * @return bool
      */
-    public static function createDirectory($target, $mode = 0777)
+    public static function createDirectory($target, $mode = 0777): bool
     {
         $target = \str_replace('..', '', $target);
 
@@ -115,7 +115,7 @@ class DirectoryChecker
      *
      * @return bool
      */
-    public static function setDirectoryPermissions($target, $mode = 0777)
+    public static function setDirectoryPermissions($target, $mode = 0777): bool
     {
         $target = \str_replace('..', '', $target);
 
@@ -127,7 +127,7 @@ class DirectoryChecker
      *
      * @return bool
      */
-    public static function dirExists($dir_path)
+    public static function dirExists($dir_path): bool
     {
         return \is_dir($dir_path);
     }

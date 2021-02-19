@@ -2,7 +2,7 @@
 
 class MtoolsCorePreload extends \XoopsPreloadItem
 {
-    public static function eventCoreFooterStart($args)
+    public static function eventCoreFooterStart($args): void
     {
         global $xoopsConfig, $xoopsDB, $xoTheme, $xoopsTpl, $xoopsUser, $xoTheme;
 
@@ -30,7 +30,7 @@ class MtoolsCorePreload extends \XoopsPreloadItem
         $sql    = 'select `tt_theme`,`tt_use_bootstrap`,`tt_bootstrap_color`,`tt_theme_kind` from `' . $xoopsDB->prefix('mtools_setup') . "`  where `tt_theme`='{$theme_set}'";
         $result = $xoopsDB->query($sql);
 
-        list($tt_theme, $tt_use_bootstrap, $tt_bootstrap_color, $tt_theme_kind) = $xoopsDB->fetchRow($result);
+        [$tt_theme, $tt_use_bootstrap, $tt_bootstrap_color, $tt_theme_kind] = $xoopsDB->fetchRow($result);
 
         if (empty($tt_theme_kind)) {
             if (is_file(XOOPS_ROOT_PATH . "/themes/{$theme_set}/config.php")) {
@@ -86,7 +86,7 @@ class MtoolsCorePreload extends \XoopsPreloadItem
     /**
      * @param $args
      */
-    public static function eventCoreIncludeCommonEnd($args)
+    public static function eventCoreIncludeCommonEnd($args): void
     {
         require __DIR__ . '/autoloader.php';
     }

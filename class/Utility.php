@@ -44,7 +44,7 @@ class Utility extends Common\SysUtility
     }
 
     // XOOPS表單安全檢查
-    public static function xoops_security_check()
+    public static function xoops_security_check(): void
     {
         if (!$GLOBALS['xoopsSecurity']->check()) {
             $error = implode("<br>", $GLOBALS['xoopsSecurity']->getErrors());
@@ -53,13 +53,13 @@ class Utility extends Common\SysUtility
     }
 
     //除錯工具
-    public static function dd($array = [])
+    public static function dd($array = []): void
     {
         header("Content-Type: application/json; charset=utf-8");
         die(json_encode($array, 256));
     }
 
-    public static function add_migrate($mode = "")
+    public static function add_migrate($mode = ""): ?string
     {
         global $xoTheme;
         self::get_jquery();
@@ -146,7 +146,7 @@ class Utility extends Common\SysUtility
     }
 
     //刪除目錄
-    public static function delete_directory($dirname)
+    public static function delete_directory($dirname): bool
     {
         if (is_dir($dirname)) {
             $dir_handle = opendir($dirname);
@@ -172,7 +172,7 @@ class Utility extends Common\SysUtility
     }
 
     //拷貝目錄
-    public static function full_copy($source = '', $target = '')
+    public static function full_copy($source = '', $target = ''): void
     {
         if (is_dir($source)) {
             if (!self::mk_dir($target) && !is_dir($target)) {
@@ -199,7 +199,7 @@ class Utility extends Common\SysUtility
         }
     }
 
-    public static function rename_win($oldfile, $newfile)
+    public static function rename_win($oldfile, $newfile): bool
     {
         if (!rename($oldfile, $newfile)) {
             if (copy($oldfile, $newfile)) {
@@ -215,7 +215,7 @@ class Utility extends Common\SysUtility
     }
 
     //路徑導覽，需搭配 get_模組_cate_path($分類編號);
-    public static function tad_breadcrumb($cate_sn = '0', $cate_path_array = [], $url_page = 'index.php', $page_cate_name = 'csn', $cate_title_name = 'title', $last = '')
+    public static function tad_breadcrumb($cate_sn = '0', $cate_path_array = [], $url_page = 'index.php', $page_cate_name = 'csn', $cate_title_name = 'title', $last = ''): string
     {
         $item = '';
         if (is_array($cate_path_array)) {
@@ -237,7 +237,7 @@ class Utility extends Common\SysUtility
         return $main;
     }
 
-    public static function setup_meta($title = '', $content = '', $image = '')
+    public static function setup_meta($title = '', $content = '', $image = ''): void
     {
         global $xoTheme, $xoopsTpl;
         if (is_object($xoTheme)) {
@@ -255,7 +255,7 @@ class Utility extends Common\SysUtility
     }
 
     //解決 basename 抓不到中文檔名的問題
-    public static function get_basename($filename)
+    public static function get_basename($filename): string
     {
         $filename = preg_replace('/^.+[\\\\\\/]/', '', $filename);
         $filename = rtrim($filename, '/');
@@ -263,7 +263,7 @@ class Utility extends Common\SysUtility
         return $filename;
     }
 
-    public static function html5($content = '', $ui = false, $bootstrap = true, $bootstrap_version = 3, $use_jquery = true, $container = 'container', $title = 'XOOPS', $head_code = '')
+    public static function html5($content = '', $ui = false, $bootstrap = true, $bootstrap_version = 3, $use_jquery = true, $container = 'container', $title = 'XOOPS', $head_code = ''): string
     {
         $jquery = '';
         if ($use_jquery) {
@@ -293,7 +293,7 @@ class Utility extends Common\SysUtility
     }
 
     //自訂錯誤訊息
-    public static function web_error($sql, $file = '', $line = '', $force = false)
+    public static function web_error($sql, $file = '', $line = '', $force = false): void
     {
         global $xoopsDB, $xoopsModule, $xoopsUser;
         xoops_loadLanguage('main', 'tadtools');
@@ -313,7 +313,7 @@ class Utility extends Common\SysUtility
     }
 
     //載入 bootstrap，目前僅後台用得到
-    public static function get_bootstrap($mode = '')
+    public static function get_bootstrap($mode = ''): ?string
     {
         global $xoopsConfig, $xoopsDB, $xoTheme, $xoopsTpl;
 
@@ -445,7 +445,7 @@ class Utility extends Common\SysUtility
         return $text;
     }
 
-    public static function _autolink_find_URLS($text)
+    public static function _autolink_find_URLS($text): array
     {
         // build the patterns
         $scheme = '(http:\/\/|https:\/\/)';
@@ -467,7 +467,7 @@ class Utility extends Common\SysUtility
         return ([]);
     }
 
-    public static function _autolink_create_html_tags($value, $key, $other = null)
+    public static function _autolink_create_html_tags($value, $key, $other = null): void
     {
         $target = $nofollow = null;
         if (is_array($other)) {
@@ -540,7 +540,7 @@ class Utility extends Common\SysUtility
     }
 
     //產生QR Code
-    public static function mk_qrcode($url)
+    public static function mk_qrcode($url): void
     {
         $imgurl = self::mk_qrcode_name($url);
         self::mk_dir(XOOPS_ROOT_PATH . '/uploads/qrcode');
@@ -568,7 +568,7 @@ class Utility extends Common\SysUtility
         return $imgurl;
     }
 
-    public static function chk_qrcode_url($url)
+    public static function chk_qrcode_url($url): string
     {
         $var = explode('?', $url);
         if (empty($var[1])) {
@@ -611,7 +611,7 @@ if (empty($DBV) && '1' == $defaul) {
     }
 
     //複選回復原始資料函數
-    public static function chk2($default_array = '', $NEED_V = '', $default = 0)
+    public static function chk2($default_array = '', $NEED_V = '', $default = 0): string
     {
         if (in_array($NEED_V, $default_array)) {
             return 'checked';
@@ -676,7 +676,7 @@ if (empty($default_array) && '1' == $default) {
     }
 
     //取得所有群組
-    public static function get_all_groups()
+    public static function get_all_groups(): array
     {
         global $xoopsDB;
         $sql = 'select groupid,name from ' . $xoopsDB->prefix('groups') . '';
@@ -700,7 +700,7 @@ if (empty($default_array) && '1' == $default) {
     }
 
     //判斷字串是否為utf8
-    public static function is_utf8($str)
+    public static function is_utf8($str): int
     {
         $i = 0;
         $len = mb_strlen($str);
@@ -742,7 +742,7 @@ if (empty($default_array) && '1' == $default) {
     }
 
     //亂數字串
-    public static function randStr($len = 6, $format = 'ALL')
+    public static function randStr($len = 6, $format = 'ALL'): string
     {
         switch ($format) {
             case 'ALL':
@@ -771,7 +771,7 @@ if (empty($default_array) && '1' == $default) {
     }
 
     //刪除整個目錄
-    public static function rrmdir($path)
+    public static function rrmdir($path): bool
     {
         return is_file($path) ?
         @unlink($path) :
@@ -780,7 +780,7 @@ if (empty($default_array) && '1' == $default) {
     }
 
     //取得分頁工具
-    public static function getPageBar($sql = '', $show_num = 20, $page_list = 10, $to_page = '', $url_other = '', $bootstrap = '3')
+    public static function getPageBar($sql = '', $show_num = 20, $page_list = 10, $to_page = '', $url_other = '', $bootstrap = '3'): array
     {
         global $xoopsDB;
         if (empty($show_num)) {
@@ -935,14 +935,14 @@ if (empty($default_array) && '1' == $default) {
         return $main;
     }
 
-    public static function make_menu_json($interface_menu = [], $moduleName = '')
+    public static function make_menu_json($interface_menu = [], $moduleName = ''): void
     {
         $json = json_encode($interface_menu);
         $filename = XOOPS_ROOT_PATH . "/uploads/menu_{$moduleName}.txt";
         file_put_contents($filename, $json);
     }
 
-    public static function TadToolsXoopsModuleConfig()
+    public static function TadToolsXoopsModuleConfig(): bool
     {
         $modhandler = xoops_getHandler('module');
         $TadToolsModule = $modhandler->getByDirname('tadtools');
@@ -956,7 +956,7 @@ if (empty($default_array) && '1' == $default) {
         return false;
     }
 
-    public static function get_jquery($ui = false, $mode = '', $theme = 'base')
+    public static function get_jquery($ui = false, $mode = '', $theme = 'base'): ?string
     {
         global $xoTheme;
         if (!isset($xoTheme) or 'return' === $mode) {

@@ -74,7 +74,7 @@ class SysUtility
      * @param Helper|null $helper
      * @return string
      */
-    public static function selectSorting($text, $form_sort, $helper = null)
+    public static function selectSorting($text, $form_sort, $helper = null): string
     {
         global $start, $order, $file_cat, $sort, $xoopsModule;
 
@@ -110,7 +110,7 @@ class SysUtility
      * @param array $cats
      * @return string
      */
-    public static function blockAddCatSelect($cats)
+    public static function blockAddCatSelect($cats): string
     {
         $cat_sql = '';
         if (is_array($cats) && !empty($cats)) {
@@ -128,7 +128,7 @@ class SysUtility
     /**
      * @param $content
      */
-    public static function metaKeywords($content)
+    public static function metaKeywords($content): void
     {
         global $xoopsTpl, $xoTheme;
         $myts    = \MyTextSanitizer::getInstance();
@@ -143,7 +143,7 @@ class SysUtility
     /**
      * @param $content
      */
-    public static function metaDescription($content)
+    public static function metaDescription($content): void
     {
         global $xoopsTpl, $xoTheme;
         $myts    = \MyTextSanitizer::getInstance();
@@ -161,7 +161,7 @@ class SysUtility
      *
      * @return array
      */
-    public static function enumerate($tableName, $columnName)
+    public static function enumerate($tableName, $columnName): array
     {
         $table = $GLOBALS['xoopsDB']->prefix($tableName);
 
@@ -224,7 +224,7 @@ class SysUtility
      *
      * @return string Trimmed string.
      */
-    public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true)
+    public static function truncateHtml($text, $length = 100, $ending = '...', $exact = false, $considerHtml = true): string
     {
         $openTags = [];
         if ($considerHtml) {
@@ -361,7 +361,7 @@ class SysUtility
      *
      * @return bool
      */
-    public function fieldExists($fieldname, $table)
+    public function fieldExists($fieldname, $table): bool
     {
         global $xoopsDB;
         $result = $xoopsDB->queryF("SHOW COLUMNS FROM   $table LIKE '$fieldname'");
@@ -374,7 +374,7 @@ class SysUtility
      *
      * @param string $folder The full path of the directory to check
      */
-    public static function prepareFolder($folder)
+    public static function prepareFolder($folder): void
     {
         try {
             if (!@mkdir($folder) && !is_dir($folder)) {
