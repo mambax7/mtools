@@ -45,7 +45,7 @@ class Configurator
      * Configurator constructor.
      * @param $dir
      */
-    public function __construct($dir)
+    public function __construct($dir = null)
     {
         //        $moduleDirName      = basename(dirname(dirname(__DIR__)));
         //        $moduleDirNameUpper = mb_strtoupper($moduleDirName);

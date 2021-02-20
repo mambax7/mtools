@@ -22,20 +22,23 @@ namespace XoopsModules\Quotes\Common;
  * @license         GPL 2.0 or later
  */
 
+use XoopsModules\Mtools\{
+    Helper
+};
+/** @var Helper $helper */
+
 /**
  * Class LetterChoice
  */
 class LetterChoice
 {
-    /**
-     * @access public
-     */
     public $helper;
     /**
      * *#@+
      *
      * @access private
      */
+    public $modHelper;
     private $objHandler;
     private $criteria;
     private $field_name;
@@ -51,6 +54,7 @@ class LetterChoice
     /**
      * Constructor
      *
+     * @param $modHelper
      * @param \XoopsPersistableObjectHandler $objHandler {@link \XoopsPersistableObjectHandler}
      * @param null                           $criteria   {@link \CriteriaElement}
      * @param null                           $field_name search by field
@@ -61,6 +65,7 @@ class LetterChoice
      * @param bool                           $caseSensitive
      */
     public function __construct(
+        $modHelper,
         $objHandler,
         $criteria = null,
         $field_name = null,
@@ -70,15 +75,15 @@ class LetterChoice
         $extra_arg = '',
         $caseSensitive = false
     ) {
-        /** @var \XoopsModules\Quotes\Helper $this ->helper */
-        $this->helper     = \XoopsModules\Quotes\Helper::getInstance();
+
+        $this->modHelper = $modHelper;
         $this->objHandler = $objHandler;
         $this->criteria   = null === $criteria ? new \CriteriaCompo() : $criteria;
         $this->field_name = null === $field_name ? $this->objHandler->identifierName : $field_name;
         //        $this->alphabet   = (count($alphabet) > 0) ? $alphabet : range('a', 'z'); // is there a way to get locale alphabet?
         //        $this->alphabet       = getLocalAlphabet();
         $this->alphabet = require dirname(__DIR__, 2) . '/language/' . $GLOBALS['xoopsConfig']['language'] . '/alphabet.php';
-        //        $this->helper->loadLanguage('alphabet');
+        //        $this->modHelper->loadLanguage('alphabet');
         $this->arg_name = $arg_name;
         $this->url      = null === $url ? $_SERVER['SCRIPT_NAME'] : $url;
         if ('' !== $extra_arg && ('&amp;' !== substr($extra_arg, -5) || '&' !== substr($extra_arg, -1))) {
@@ -159,7 +164,7 @@ class LetterChoice
         $choiceByLetterTpl          = new \XoopsTpl();
         $choiceByLetterTpl->caching = 0; // Disable cache
         $choiceByLetterTpl->assign('alphabet', $alphabetArray);
-        $ret .= $choiceByLetterTpl->fetch("db:{$this->helper->getDirname()}_letterschoice.tpl");
+        $ret .= $choiceByLetterTpl->fetch("db:{$this->modHelper->getDirname()}_letterschoice.tpl");
         unset($choiceByLetterTpl);
 
         return $ret;

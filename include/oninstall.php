@@ -17,9 +17,14 @@
  * @author        XOOPS Development Team
  */
 
-use XoopsModules\Mtools;
-use XoopsModules\Mtools\Common;
+use XoopsModules\Mtools\{Common\Configurator,
+    Helper,
+    Utility
+};
 
+/** @var Admin $adminObject */
+/** @var Helper $helper */
+/** @var Configurator $configurator */
 
 /**
  * Prepares system prior to attempting to install module
@@ -31,7 +36,7 @@ function xoops_module_pre_install_mtools(\XoopsModule $module)
 {
     //    require  dirname(__DIR__) . '/preloads/autoloader.php';
     require __DIR__ . '/common.php';
-    $utility = new \XoopsModules\Mtools\Utility();
+    $utility = new Utility();
     //check for minimum XOOPS version
     $xoopsSuccess = $utility::checkVerXoops($module);
 
@@ -60,11 +65,9 @@ function xoops_module_install_mtools(\XoopsModule $module)
 
     $moduleDirName = basename(dirname(__DIR__));
 
-    /** @var \XoopsModules\Mtools\Helper $helper */ /** @var \XoopsModules\Mtools\Utility $utility */
-    /** @var \XoopsModules\Mtools\Common\Configurator $configurator */
-    $helper       = \XoopsModules\Mtools\Helper::getInstance();
-    $utility      = new \XoopsModules\Mtools\Utility();
-    $configurator = new \XoopsModules\Mtools\Common\Configurator();
+    $helper       = Helper::getInstance();
+    $utility      = new Utility();
+    $configurator = new Configurator($helper->path());
     // Load language files
     $helper->loadLanguage('admin');
     $helper->loadLanguage('modinfo');
@@ -74,7 +77,7 @@ function xoops_module_install_mtools(\XoopsModule $module)
     $moduleId = $module->getVar('mid');
     //$moduleName = $module->getVar('name');
     /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
+    $grouppermHandler = xoops_getHandler('groupperm');
     // access rights ------------------------------------------
     $grouppermHandler->addRight($moduleDirName . '_approve', 1, XOOPS_GROUP_ADMIN, $moduleId);
     $grouppermHandler->addRight($moduleDirName . '_submit', 1, XOOPS_GROUP_ADMIN, $moduleId);

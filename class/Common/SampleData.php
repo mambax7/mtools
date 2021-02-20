@@ -3,6 +3,7 @@
 namespace XoopsModules\Mtools\Common;
 
 use XoopsModules\Mtools\Utility;
+use \Xmf\Database\TableLoad;
 
 class SampleData
 {
@@ -10,6 +11,7 @@ class SampleData
     public $xoopsConfig;
     public $moduleDirName;
     public $modHelper;
+    public $moduleDirNameUpper;
 
     /**
      * SampleData constructor.
@@ -81,7 +83,7 @@ public function loadData(): void
 
         $tables = $this->modHelper->getModule()->getInfo('tables');
 
-        $languageFolder = __DIR__ . '/' . $this->language;
+        $languageFolder = $this->modHelper->path('testdata/' . $this->language);
         if (!file_exists($languageFolder . '/')) {
             Utility::createFolder($languageFolder . '/');
         }
@@ -90,14 +92,14 @@ public function loadData(): void
 
         // save module tables
         foreach ($tables as $table) {
-            \Xmf\Database\TableLoad::saveTableToYamlFile($table, $exportFolder . $table . '.yml');
+            TableLoad::saveTableToYamlFile($table, $exportFolder . $table . '.yml');
         }
 
         // save permissions
         $criteria = new \CriteriaCompo();
         $criteria->add(new \Criteria('gperm_modid', $this->modHelper->getModule()->getVar('mid')));
         $skipColumns[] = 'gperm_id';
-        \Xmf\Database\TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
+        TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
         unset($criteria);
 
 //        redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS'));

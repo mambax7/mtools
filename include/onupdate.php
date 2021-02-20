@@ -17,7 +17,14 @@
  * @author       XOOPS Development Team
  */
 
-use XoopsModules\Mtools;
+use XoopsModules\Mtools\{Common\Configurator,
+    Helper,
+    Utility
+};
+
+/** @var Admin $adminObject */
+/** @var Helper $helper */
+/** @var Configurator $configurator */
 
 if ((!defined('XOOPS_ROOT_PATH')) || !($GLOBALS['xoopsUser'] instanceof \XoopsUser)
     || !$GLOBALS['xoopsUser']->isAdmin()) {
@@ -44,10 +51,8 @@ function tableExists($tablename)
 function xoops_module_pre_update_mtools(\XoopsModule $module)
 {
     $moduleDirName = basename(dirname(__DIR__));
-    /** @var Mtools\Helper $helper */
-    /** @var Mtools\Utility $utility */
-    $helper  = Mtools\Helper::getInstance();
-    $utility = new Mtools\Utility();
+    $helper        = Helper::getInstance();
+    $utility       = new Utility();
 
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
@@ -70,16 +75,13 @@ function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = nul
     $moduleDirName      = basename(dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-    /** @var Mtools\Helper $helper */ /** @var Mtools\Utility $utility */
-    /** @var Mtools\Common\Configurator $configurator */
-    $helper       = Mtools\Helper::getInstance();
-    $utility      = new Mtools\Utility();
-    $configurator = new Mtools\Common\Configurator();
+    $helper       = Helper::getInstance();
+    $utility      = new Utility();
+    $configurator = new Configurator($helper->path());
 
     $helper->loadLanguage('common');
 
     if ($previousVersion < 240) {
-
         //delete old HTML templates
         if (count($configurator->templateFolders) > 0) {
             foreach ($configurator->templateFolders as $folder) {
@@ -131,7 +133,7 @@ function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = nul
 
         //  ---  COPY blank.png FILES ---------------
         if (count($configurator->copyBlankFiles) > 0) {
-            $file =  dirname(__DIR__) . '/assets/images/blank.png';
+            $file = dirname(__DIR__) . '/assets/images/blank.png';
             foreach (array_keys($configurator->copyBlankFiles) as $i) {
                 $dest = $configurator->copyBlankFiles[$i] . '/blank.png';
                 $utility::copyFile($file, $dest);
@@ -142,9 +144,8 @@ function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = nul
         $sql = 'DELETE FROM ' . $GLOBALS['xoopsDB']->prefix('tplfile') . " WHERE `tpl_module` = '" . $module->getVar('dirname', 'n') . "' AND `tpl_file` LIKE '%.html%'";
         $GLOBALS['xoopsDB']->queryF($sql);
 
-        /** @var XoopsGroupPermHandler $grouppermHandler */
         /** @var \XoopsGroupPermHandler $grouppermHandler */
-$grouppermHandler = xoops_getHandler('groupperm');
+        $grouppermHandler = xoops_getHandler('groupperm');
 
         return $grouppermHandler->deleteByModule($module->getVar('mid'), 'item_read');
     }

@@ -19,7 +19,13 @@
  * @link            https://xoops.org XOOPS
  */
 
-use XoopsModules\Mtools;
+use XoopsModules\Mtools\{
+    Helper,
+    Utility
+};
+
+/** @var Admin $adminObject */
+/** @var Helper $helper */
 
 /**
  * Prepares system prior to attempting to uninstall module
@@ -45,9 +51,8 @@ function xoops_module_uninstall_mtools(\XoopsModule $module)
     $moduleDirName      = basename(dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-    $helper  = Mtools\Helper::getInstance();
-    $utility = new Mtools\Utility();
-    //    $configurator = new Mtools\Common\Configurator();
+    $helper  = Helper::getInstance();
+    $utility = new Utility();
     // Load language files
     $helper->loadLanguage('admin');
     $helper->loadLanguage('common');
