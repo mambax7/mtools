@@ -47,7 +47,7 @@ class TestdataButtons
 
 //        if (1 == $displaySampleButton) {
 //            xoops_loadLanguage('admin/modulesadmin', 'system');
-//            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=load'), 'download');
+//            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=load'), 'download');
 //            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=save'), 'upload');
 //            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=clear'), 'alert');
 //            //    $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA'), $modhelper->url( 'testdata/index.php?op=exportschema'), 'add');
@@ -56,11 +56,11 @@ class TestdataButtons
 //            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SHOW_SAMPLEDATA_BUTTONS'), '?op=show_buttons', 'add');
 //        }
 
-        $sampleData = new SampleData($modhelper);
+        $sampleData = new TestdataSample($modhelper);
 
         if (1 == $displaySampleButton) {
             xoops_loadLanguage('admin/modulesadmin', 'system');
-//            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA'), $sampleData->loadData(), 'download');
+//            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA'), $sampleData->loadData(), 'download');
 //            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA'), $sampleData->saveData(), 'upload');
 //            $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA'), $sampleData->clearData(), 'alert');
 //            //    $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA'), $sampleData->exportSchema(), 'add');
@@ -68,7 +68,7 @@ class TestdataButtons
 
 
 
-                        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'ADD_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=load'), 'download');
+                        $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=load'), 'download');
                         $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=save'), 'upload');
                         $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA'), $modhelper->url('testdata/index.php?op=clear'), 'alert');
                         //    $adminObject->addItemButton(constant('CO_' . $moduleDirNameUpper . '_' . 'EXPORT_SCHEMA'), $modhelper->url( 'testdata/index.php?op=exportschema'), 'add');

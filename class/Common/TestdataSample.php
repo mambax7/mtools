@@ -2,26 +2,31 @@
 
 namespace XoopsModules\Mtools\Common;
 
-use XoopsModules\Mtools\Utility;
+use XoopsModules\Mtools\{Helper,
+    Utility
+};
 use \Xmf\Database\TableLoad;
 
-class SampleData
+class TestdataSample
 {
     public $language;
     public $xoopsConfig;
-    public $moduleDirName;
     public $modHelper;
+    public $moduleDirName;
     public $moduleDirNameUpper;
 
     /**
-     * SampleData constructor.
+     * TestdataSample constructor.
      * @param $modHelper
      */
-    public function __construct($modHelper) {
+    public function __construct($modHelper)
+    {
         global $xoopsConfig;
-        $this->modHelper = $modHelper;
-//        $this->moduleDirName = $modHelper->getDirname;
-//        $this->moduleDirNameUpper = mb_strtoupper($this->moduleDirName);
+        $this->modHelper          = $modHelper;
+        $helper                   = Helper::getInstance();
+        $this->moduleDirName      = $helper->getDirname();
+        $this->moduleDirNameUpper = mb_strtoupper($helper->getDirname());
+        $helper->loadLanguage('common');
 
         $this->language = 'english/';
         if (is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
@@ -31,20 +36,11 @@ class SampleData
 
     // XMF TableLoad for SAMPLE data
 
-public function loadData(): void
-{
-        $this->moduleDirName = $this->modHelper->getDirname();
-        $this->moduleDirNameUpper = mb_strtoupper($this->moduleDirName);
-
+    public function loadData(): void
+    {
         $utility      = new Utility();
         $configurator = new Configurator($this->modHelper->path());
-
         $tables = $this->modHelper->getModule()->getInfo('tables');
-
-//        $language = 'english/';
-//        if (is_dir(__DIR__ . '/' . $xoopsConfig['language'])) {
-//            $language = $xoopsConfig['language'] . '/';
-//        }
 
         // load module tables
         foreach ($tables as $table) {
@@ -56,9 +52,6 @@ public function loadData(): void
         // load permissions
         $table     = 'group_permission';
         $tabledata = \Xmf\Yaml::readWrapped($this->language . $table . '.yml');
-
-
-//        $mid       = \Xmf\Module\Helper::getHelper($this->moduleDirName)->getModule()->getVar('mid');
         $mid = $this->modHelper->getModule()->getVar('mid');
         $this->loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', $mid);
 
@@ -71,16 +64,12 @@ public function loadData(): void
                 $utility::rcopy($src, $dest);
             }
         }
-//        redirect_header('../admin/index.php', 1, constant('CO_' . $this->moduleDirNameUpper . '_' . 'SAMPLEDATA_SUCCESS'));
-        redirect_header($this->modHelper->url('admin/index.php'), 1, constant('CO_' . $this->moduleDirNameUpper . '_' . 'SAMPLEDATA_SUCCESS'));
+        redirect_header($this->modHelper->url('admin/index.php'), 1, constant('CO_' . $this->moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS'));
     }
 
     public function saveData(): void
     {
         global $xoopsConfig;
-        $this->moduleDirName = $this->modHelper->getDirname();
-        $this->moduleDirNameUpper = mb_strtoupper($this->moduleDirName);
-
         $tables = $this->modHelper->getModule()->getInfo('tables');
 
         $languageFolder = $this->modHelper->path('testdata/' . $this->language);
@@ -102,14 +91,11 @@ public function loadData(): void
         TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
         unset($criteria);
 
-//        redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS'));
         redirect_header($this->modHelper->url('admin/index.php'), 1, constant('CO_' . $this->moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS'));
     }
 
     public function exportSchema(): void
     {
-        $this->moduleDirName = $this->modHelper->getDirname();
-        $this->moduleDirNameUpper = mb_strtoupper($this->moduleDirName);
         try {
             // TODO set exportSchema
             //        $migrate = new Migrate($moduleDirName);
@@ -123,12 +109,6 @@ public function loadData(): void
 
     public function clearData(): void
     {
-//                $moduleDirName      = basename(dirname(__DIR__));
-//                $moduleDirNameUpper = mb_strtoupper($moduleDirName);
-
-        $this->moduleDirName = $this->modHelper->getDirname();
-        $this->moduleDirNameUpper = mb_strtoupper($this->moduleDirName);
-
         // Load language files
         $this->modHelper->loadLanguage('common');
         $tables = $this->modHelper->getModule()->getInfo('tables');
@@ -191,6 +171,4 @@ public function loadData(): void
             }
         }
     }
-
-
 }
