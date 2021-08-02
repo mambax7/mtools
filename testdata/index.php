@@ -13,10 +13,12 @@
  * @author          Michael Beck (aka Mamba)
  */
 
+use Xmf\Database\TableLoad;
 use Xmf\Request;
+use Xmf\Yaml;
 use XoopsModules\Mtools\{
     Helper,
-    Common,
+    Common\Configurator,
     Utility
 };
 
@@ -206,7 +208,7 @@ function clearSampleData(){
     $tables = $helper->getModule()->getInfo('tables');
     // truncate module tables
     foreach ($tables as $table) {
-        \Xmf\Database\TableLoad::truncateTable($table);
+        TableLoad::truncateTable($table);
     }
     redirect_header($helper->url('admin/index.php'), 1, constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA_OK'));
 }
