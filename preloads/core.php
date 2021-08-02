@@ -2,11 +2,11 @@
 
 class MtoolsCorePreload extends \XoopsPreloadItem
 {
-    public static function eventCoreFooterStart($args): void
+    public static function eventCoreFooterStart($args)
     {
         global $xoopsConfig, $xoopsDB, $xoTheme, $xoopsTpl, $xoopsUser, $xoTheme;
 
-        $moduleDirName = basename(dirname(__DIR__));
+        $moduleDirName = \basename(\dirname(__DIR__));
         $xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
 
         $xoTheme->addStylesheet('modules' . $moduleDirName . '/jquery/themes/base/jquery.ui.all.css');
@@ -86,7 +86,7 @@ class MtoolsCorePreload extends \XoopsPreloadItem
     /**
      * @param $args
      */
-    public static function eventCoreIncludeCommonEnd($args): void
+    public static function eventCoreIncludeCommonEnd($args)
     {
         require __DIR__ . '/autoloader.php';
     }

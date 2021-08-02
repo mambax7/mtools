@@ -48,7 +48,7 @@ function xoops_module_pre_uninstall_mtools(\XoopsModule $module)
 function xoops_module_uninstall_mtools(\XoopsModule $module)
 {
     require __DIR__ . '/common.php';
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     $helper  = Helper::getInstance();

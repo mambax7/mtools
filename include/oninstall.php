@@ -11,10 +11,8 @@
 
 /**
  * @copyright     {@link https://xoops.org/ XOOPS Project}
- * @license       {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
- * @author        XOOPS Development Team
+ * @license       {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author       XOOPS Development Team
  */
 
 use XoopsModules\Mtools\{Common\Configurator,
@@ -34,7 +32,7 @@ use XoopsModules\Mtools\{Common\Configurator,
  */
 function xoops_module_pre_install_mtools(\XoopsModule $module)
 {
-    //    require  dirname(__DIR__) . '/preloads/autoloader.php';
+    //    require  \dirname(__DIR__) . '/preloads/autoloader.php';
     require __DIR__ . '/common.php';
     $utility = new Utility();
     //check for minimum XOOPS version
@@ -61,9 +59,9 @@ function xoops_module_pre_install_mtools(\XoopsModule $module)
  */
 function xoops_module_install_mtools(\XoopsModule $module)
 {
-    require_once dirname(__DIR__) . '/preloads/autoloader.php';
+    require_once \dirname(__DIR__) . '/preloads/autoloader.php';
 
-    $moduleDirName = basename(dirname(__DIR__));
+    $moduleDirName = \basename(\dirname(__DIR__));
 
     $helper       = Helper::getInstance();
     $utility      = new Utility();
@@ -95,7 +93,7 @@ function xoops_module_install_mtools(\XoopsModule $module)
 
     //  ---  COPY blank.png FILES ---------------
     if (count($configurator->copyBlankFiles) > 0) {
-        $file = dirname(__DIR__) . '/assets/images/blank.png';
+        $file = \dirname(__DIR__) . '/assets/images/blank.png';
         foreach (array_keys($configurator->copyBlankFiles) as $i) {
             $dest = $configurator->copyBlankFiles[$i] . '/blank.png';
             $utility::copyFile($file, $dest);
@@ -105,7 +103,7 @@ function xoops_module_install_mtools(\XoopsModule $module)
     /*
         //  ---  COPY test folder files ---------------
     if (count($configurator->copyTestFolders) > 0) {
-        //        $file =  dirname(__DIR__) . '/testdata/images/';
+        //        $file =  \dirname(__DIR__) . '/testdata/images/';
         foreach (array_keys($configurator->copyTestFolders) as $i) {
             $src  = $configurator->copyTestFolders[$i][0];
             $dest = $configurator->copyTestFolders[$i][1];

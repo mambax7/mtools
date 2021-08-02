@@ -5,7 +5,7 @@ use XoopsModules\Mtools\{
 };
 
 if (!defined('XOOPS_ROOT_PATH')) {
-    require_once dirname(__DIR__, 2) . '/mainfile.php';
+    require_once \dirname(__DIR__, 2) . '/mainfile.php';
 } else {
     require_once XOOPS_ROOT_PATH . '/mainfile.php';
 }

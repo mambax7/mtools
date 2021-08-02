@@ -13,11 +13,9 @@ namespace XoopsModules\Mtools;
  */
 
 /**
- * @copyright    XOOPS Project https://xoops.org/
- * @license      GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
- * @package
- * @since
- * @author       XOOPS Development Team
+ * @copyright    XOOPS Project (https://xoops.org)
+ * @license      GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
+ * @author      XOOPS Development Team
  */
 
 
@@ -84,4 +82,4 @@ class Helper extends \Xmf\Module\Helper
         return $ret;
     }
 }
-//require  dirname(dirname(__DIR__)) . '/mainfile.php';
+//require_once \dirname(__DIR__, 2) . '/mainfile.php';

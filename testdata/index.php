@@ -7,9 +7,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
- * @license         GNU GPL 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
- * @package
+ * @copyright       XOOPS Project (https://xoops.org)
+ * @license         GNU GPL 2 (https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
  * @since           2.5.9
  * @author          Michael Beck (aka Mamba)
  */
@@ -21,12 +20,12 @@ use XoopsModules\Mtools\{
     Utility
 };
 
-require_once dirname(__DIR__, 3) . '/include/cp_header.php';
-require dirname(__DIR__) . '/preloads/autoloader.php';
+require \dirname(__DIR__, 3) . '/include/cp_header.php';
+require \dirname(__DIR__) . '/preloads/autoloader.php';
 
 $op = Request::getCmd('op', '');
 
-$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirName      = \basename(\dirname(__DIR__));
 $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
 $helper = Helper::getInstance();
@@ -49,6 +48,9 @@ switch ($op) {
     case 'save':
         saveSampleData();
         break;
+    case 'clear':
+        clearSampleData();
+        break;
 }
 
 // XMF TableLoad for SAMPLE data
@@ -56,11 +58,11 @@ switch ($op) {
 function loadSampleData()
 {
     global $xoopsConfig;
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     $utility      = new Utility();
-    $configurator = new Common\Configurator();
+    $configurator = new Configurator();
 
     $tables = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
 
@@ -71,36 +73,36 @@ function loadSampleData()
 
     // load module tables
     foreach ($tables as $table) {
-        $tabledata = \Xmf\Yaml::readWrapped($language . $table . '.yml');
-        \Xmf\Database\TableLoad::truncateTable($table);
-        \Xmf\Database\TableLoad::loadTableFromArray($table, $tabledata);
+        $tabledata = Yaml::readWrapped($language . $table . '.yml');
+        TableLoad::truncateTable($table);
+        TableLoad::loadTableFromArray($table, $tabledata);
     }
 
     // load permissions
     $table     = 'group_permission';
-    $tabledata = \Xmf\Yaml::readWrapped($language . $table . '.yml');
+    $tabledata = Yaml::readWrapped($language . $table . '.yml');
     $mid       = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getVar('mid');
     loadTableFromArrayWithReplace($table, $tabledata, 'gperm_modid', $mid);
 
     //  ---  COPY test folder files ---------------
     if (is_array($configurator->copyTestFolders) && count($configurator->copyTestFolders) > 0) {
-        //        $file =  dirname(__DIR__) . '/testdata/images/';
+        //        $file =  \dirname(__DIR__) . '/testdata/images/';
         foreach (array_keys($configurator->copyTestFolders) as $i) {
             $src  = $configurator->copyTestFolders[$i][0];
             $dest = $configurator->copyTestFolders[$i][1];
             $utility::rcopy($src, $dest);
         }
     }
-    redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS'));
+    \redirect_header('../admin/index.php', 1, \constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS'));
 }
 
 function saveSampleData()
 {
     global $xoopsConfig;
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
-
-    $tables = \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getInfo('tables');
+    $helper             = Helper::getInstance();
+    $tables             = $helper->getModule()->getInfo('tables');
 
     $languageFolder = __DIR__ . '/' . $xoopsConfig['language'];
     if (!file_exists($languageFolder . '/')) {
@@ -111,22 +113,22 @@ function saveSampleData()
 
     // save module tables
     foreach ($tables as $table) {
-        \Xmf\Database\TableLoad::saveTableToYamlFile($table, $exportFolder . $table . '.yml');
+        TableLoad::saveTableToYamlFile($table, $exportFolder . $table . '.yml');
     }
 
     // save permissions
     $criteria = new \CriteriaCompo();
-    $criteria->add(new \Criteria('gperm_modid', \Xmf\Module\Helper::getHelper($moduleDirName)->getModule()->getVar('mid')));
+    $criteria->add(new \Criteria('gperm_modid', $helper->getModule()->getVar('mid')));
     $skipColumns[] = 'gperm_id';
-    \Xmf\Database\TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
+    TableLoad::saveTableToYamlFile('group_permission', $exportFolder . 'group_permission.yml', $criteria, $skipColumns);
     unset($criteria);
 
-    redirect_header('../admin/index.php', 1, constant('CO_' . $moduleDirNameUpper . '_' . 'LOAD_SAMPLEDATA_SUCCESS'));
+    \redirect_header('../admin/index.php', 1, \constant('CO_' . $moduleDirNameUpper . '_' . 'SAVE_SAMPLEDATA_SUCCESS'));
 }
 
 function exportSchema()
 {
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     try {
@@ -193,4 +195,18 @@ function loadTableFromArrayWithReplace($table, $data, $search, $replace)
     }
 
     return $count;
+}
+
+function clearSampleData(){
+    $moduleDirName      = \basename(\dirname(__DIR__));
+    $moduleDirNameUpper = mb_strtoupper($moduleDirName);
+    $helper             = Helper::getInstance();
+    // Load language files
+    $helper->loadLanguage('common');
+    $tables = $helper->getModule()->getInfo('tables');
+    // truncate module tables
+    foreach ($tables as $table) {
+        \Xmf\Database\TableLoad::truncateTable($table);
+    }
+    redirect_header($helper->url('admin/index.php'), 1, constant('CO_' . $moduleDirNameUpper . '_' . 'CLEAR_SAMPLEDATA_OK'));
 }

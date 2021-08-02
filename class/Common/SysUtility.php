@@ -79,7 +79,7 @@ class SysUtility
         global $start, $order, $file_cat, $sort, $xoopsModule;
 
         $select_view   = '';
-        $moduleDirName = basename(dirname(__DIR__));
+        $moduleDirName = \basename(\dirname(__DIR__));
         /** @var Helper $helper */
         if (null === $helper){
         $helper = Helper::getInstance();
@@ -113,9 +113,9 @@ class SysUtility
     public static function blockAddCatSelect($cats): string
     {
         $cat_sql = '';
-        if (is_array($cats) && !empty($cats)) {
-            $cat_sql = '(' . current($cats);
-            array_shift($cats);
+        if (\is_array($cats) && !empty($cats)) {
+            $cat_sql = '(' . \current($cats);
+            \array_shift($cats);
             foreach ($cats as $cat) {
                 $cat_sql .= ',' . $cat;
             }
@@ -133,10 +133,10 @@ class SysUtility
         global $xoopsTpl, $xoTheme;
         $myts    = \MyTextSanitizer::getInstance();
         $content = $myts->undoHtmlSpecialChars($myts->displayTarea($content));
-        if (null !== $xoTheme && is_object($xoTheme)) {
-            $xoTheme->addMeta('meta', 'keywords', strip_tags($content));
+        if (null !== $xoTheme && \is_object($xoTheme)) {
+            $xoTheme->addMeta('meta', 'keywords', \strip_tags($content));
         } else {    // Compatibility for old Xoops versions
-            $xoopsTpl->assign('xoops_metaKeywords', strip_tags($content));
+            $xoopsTpl->assign('xoops_metaKeywords', \strip_tags($content));
         }
     }
 
@@ -148,10 +148,10 @@ class SysUtility
         global $xoopsTpl, $xoTheme;
         $myts    = \MyTextSanitizer::getInstance();
         $content = $myts->undoHtmlSpecialChars($myts->displayTarea($content));
-        if (null !== $xoTheme && is_object($xoTheme)) {
-            $xoTheme->addMeta('meta', 'description', strip_tags($content));
+        if (null !== $xoTheme && \is_object($xoTheme)) {
+            $xoTheme->addMeta('meta', 'description', \strip_tags($content));
         } else {    // Compatibility for old Xoops versions
-            $xoopsTpl->assign('xoops_metaDescription', strip_tags($content));
+            $xoopsTpl->assign('xoops_metaDescription', \strip_tags($content));
         }
     }
 
@@ -176,40 +176,10 @@ class SysUtility
         }
 
         $row      = $GLOBALS['xoopsDB']->fetchBoth($result);
-        $enumList = explode(',', str_replace("'", '', substr($row['COLUMN_TYPE'], 5, -6)));
+        $enumList = \explode(',', \str_replace("'", '', \substr($row['COLUMN_TYPE'], 5, -6)));
         return $enumList;
     }
 
-    /**
-     * @param array|string $tableName
-     * @param int          $id_field
-     * @param int          $id
-     *
-     * @return mixed
-     */
-    public static function cloneRecord($tableName, $id_field, $id)
-    {
-        $new_id = false;
-        $table  = $GLOBALS['xoopsDB']->prefix($tableName);
-        // copy content of the record you wish to clone 
-        $sql       = "SELECT * FROM $table WHERE $id_field='$id' ";
-        $tempTable = $GLOBALS['xoopsDB']->fetchArray($GLOBALS['xoopsDB']->query($sql), MYSQLI_ASSOC);
-        if (!$tempTable) {
-            exit($GLOBALS['xoopsDB']->error());
-        }
-        // set the auto-incremented id's value to blank.
-        unset($tempTable[$id_field]);
-        // insert cloned copy of the original  record 
-        $sql    = "INSERT INTO $table (" . implode(', ', array_keys($tempTable)) . ") VALUES ('" . implode("', '", array_values($tempTable)) . "')";
-        $result = $GLOBALS['xoopsDB']->queryF($sql);
-        if (!$result) {
-            exit($GLOBALS['xoopsDB']->error());
-        }
-        // Return the new id
-        $new_id = $GLOBALS['xoopsDB']->getInsertId();
-
-        return $new_id;
-    }
 
     /**
      * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
@@ -244,7 +214,7 @@ class SysUtility
                     if (\preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
                         // do nothing
                         // if tag is a closing tag
-                    } elseif (\preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
+                    } elseif (\preg_match('/^<\s*\/(\S+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
                         // delete tag from $openTags list
                         $pos = \array_search($tag_matchings[1], $openTags, true);
                         if (false !== $pos) {
@@ -361,7 +331,7 @@ class SysUtility
      *
      * @return bool
      */
-    public function fieldExists($fieldname, $table): bool
+    public static function fieldExists($fieldname, $table)
     {
         global $xoopsDB;
         $result = $xoopsDB->queryF("SHOW COLUMNS FROM   $table LIKE '$fieldname'");
@@ -370,20 +340,63 @@ class SysUtility
     }
 
     /**
+     * @param array|string $tableName
+     * @param int          $id_field
+     * @param int          $id
+     *
+     * @return mixed
+     */
+    public static function cloneRecord($tableName, $id_field, $id)
+    {
+        $new_id = false;
+        $table  = $GLOBALS['xoopsDB']->prefix($tableName);
+        // copy content of the record you wish to clone
+        $sql       = "SELECT * FROM $table WHERE $id_field='$id' ";
+        $tempTable = $GLOBALS['xoopsDB']->fetchArray($GLOBALS['xoopsDB']->query($sql), \MYSQLI_ASSOC);
+        if (!$tempTable) {
+            exit($GLOBALS['xoopsDB']->error());
+        }
+        // set the auto-incremented id's value to blank.
+        unset($tempTable[$id_field]);
+        // insert cloned copy of the original  record
+        $sql    = "INSERT INTO $table (" . \implode(', ', \array_keys($tempTable)) . ") VALUES ('" . \implode("', '", \array_values($tempTable)) . "')";
+        $result = $GLOBALS['xoopsDB']->queryF($sql);
+        if (!$result) {
+            exit($GLOBALS['xoopsDB']->error());
+        }
+        // Return the new id
+        $new_id = $GLOBALS['xoopsDB']->getInsertId();
+
+        return $new_id;
+    }
+
+    /**
      * Function responsible for checking if a directory exists, we can also write in and create an index.html file
      *
      * @param string $folder The full path of the directory to check
      */
-    public static function prepareFolder($folder): void
+    public static function prepareFolder($folder)
     {
         try {
-            if (!@mkdir($folder) && !is_dir($folder)) {
-                throw new \RuntimeException(sprintf('Unable to create the %s directory', $folder));
+            if (!@\mkdir($folder) && !\is_dir($folder)) {
+                throw new \RuntimeException(\sprintf('Unable to create the %s directory', $folder));
             }
             file_put_contents($folder . '/index.html', '<script>history.go(-1);</script>');
         } catch (\Exception $e) {
-            echo 'Caught exception: ', $e->getMessage(), "
-", '<br>';
+            echo 'Caught exception: ', $e->getMessage(), "\n", '<br>';
         }
+    }
+
+
+    /**
+     * @param string $tablename
+     *
+     * @return bool
+     */
+    public static function tableExists($tablename)
+    {
+        $result = $GLOBALS['xoopsDB']->queryF("SHOW TABLES LIKE '$tablename'");
+
+        return $GLOBALS['xoopsDB']->getRowsNum($result) > 0;
     }
 }

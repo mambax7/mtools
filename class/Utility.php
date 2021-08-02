@@ -47,15 +47,15 @@ class Utility extends Common\SysUtility
     public static function xoops_security_check(): void
     {
         if (!$GLOBALS['xoopsSecurity']->check()) {
-            $error = implode("<br>", $GLOBALS['xoopsSecurity']->getErrors());
-            redirect_header($_SERVER['PHP_SELF'], 3, $error);
+            $error = \implode("<br>", $GLOBALS['xoopsSecurity']->getErrors());
+            \redirect_header($_SERVER['SCRIPT_NAME'], 3, $error);
         }
     }
 
     //除錯工具
     public static function dd($array = []): void
     {
-        header("Content-Type: application/json; charset=utf-8");
+        \header("Content-Type: application/json; charset=utf-8");
         die(json_encode($array, 256));
     }
 
@@ -89,17 +89,17 @@ class Utility extends Common\SysUtility
         switch ($type) {
             case 'xoops':
                 if (empty($ver)) {
-                    $ver = XOOPS_VERSION;
+                    $ver = \XOOPS_VERSION;
                 }
-                $version = explode('.', str_replace('XOOPS ', '', $ver));
+                $version = \explode('.', \str_replace('XOOPS ', '', $ver));
                 break;
 
             case 'php':
                 if (empty($ver)) {
-                    $ver = PHP_VERSION;
+                    $ver = \PHP_VERSION;
                 }
 
-                $version = explode('.', $ver);
+                $version = \explode('.', $ver);
                 break;
 
             default:
@@ -107,14 +107,14 @@ class Utility extends Common\SysUtility
                     $sql = "select version from `" . $xoopsDB->prefix("modules") . "` where dirname='{$type}'";
                     $result = $xoopsDB->query($sql) or self::web_error($sql, __FILE__, __LINE__);
                     [$ver] = $xoopsDB->fetchRow($result);
-                    for ($i = 0; $i < strlen($ver); $i++) {
-                        $version[] = substr($ver, $i, 1);
+                    for ($i = 0; $i < \strlen($ver); $i++) {
+                        $version[] = \substr($ver, $i, 1);
                     }
                 } else {
-                    $v = explode('.', $ver);
+                    $v = \explode('.', $ver);
                     $version[] = $v[0];
-                    for ($i = 0; $i < strlen($v[1]); $i++) {
-                        $version[] = substr($v[1], $i, 1);
+                    for ($i = 0; $i < \strlen($v[1]); $i++) {
+                        $version[] = \substr($v[1], $i, 1);
                     }
 
                 }
@@ -135,11 +135,11 @@ class Utility extends Common\SysUtility
         }
 
         //若目錄不存在的話建立目錄
-        if (!is_dir($dir)) {
-            umask(000);
+        if (!\is_dir($dir)) {
+            \umask(000);
             //若建立失敗秀出警告訊息
-            if (!mkdir($dir, 0777) && !is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+            if (!\mkdir($dir, 0777) && !\is_dir($dir)) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', $dir));
             }
             return $dir;
         }
@@ -148,25 +148,25 @@ class Utility extends Common\SysUtility
     //刪除目錄
     public static function delete_directory($dirname): bool
     {
-        if (is_dir($dirname)) {
-            $dir_handle = opendir($dirname);
+        if (\is_dir($dirname)) {
+            $dir_handle = \opendir($dirname);
         }
 
         if (!$dir_handle) {
             return false;
         }
 
-        while ($file = readdir($dir_handle)) {
+        while ($file = \readdir($dir_handle)) {
             if ('.' !== $file && '..' !== $file) {
-                if (!is_dir($dirname . '/' . $file)) {
-                    unlink($dirname . '/' . $file);
+                if (!\is_dir($dirname . '/' . $file)) {
+                    \unlink($dirname . '/' . $file);
                 } else {
                     self::delete_directory($dirname . '/' . $file);
                 }
             }
         }
-        closedir($dir_handle);
-        rmdir($dirname);
+        \closedir($dir_handle);
+        \rmdir($dirname);
 
         return true;
     }
@@ -174,36 +174,36 @@ class Utility extends Common\SysUtility
     //拷貝目錄
     public static function full_copy($source = '', $target = ''): void
     {
-        if (is_dir($source)) {
-            if (!self::mk_dir($target) && !is_dir($target)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $target));
+        if (\is_dir($source)) {
+            if (!self::mk_dir($target) && !\is_dir($target)) {
+                throw new \RuntimeException(\sprintf('Directory "%s" was not created', $target));
             }
-            $d = dir($source);
+            $d = \dir($source);
             while (false !== ($entry = $d->read())) {
                 if ('.' === $entry || '..' === $entry) {
                     continue;
                 }
 
                 $Entry = $source . '/' . $entry;
-                if (is_dir($Entry)) {
+                if (\is_dir($Entry)) {
                     self::full_copy($Entry, $target . '/' . $entry);
                     continue;
                 }
-                copy($Entry, $target . '/' . $entry);
+                \copy($Entry, $target . '/' . $entry);
             }
             $d->close();
         } else {
             if (\file_exists($source)) {
-                copy($source, $target);
+                \copy($source, $target);
             }
         }
     }
 
     public static function rename_win($oldfile, $newfile): bool
     {
-        if (!rename($oldfile, $newfile)) {
-            if (copy($oldfile, $newfile)) {
-                unlink($oldfile);
+        if (!\rename($oldfile, $newfile)) {
+            if (\copy($oldfile, $newfile)) {
+                \unlink($oldfile);
 
                 return true;
             }
@@ -218,7 +218,7 @@ class Utility extends Common\SysUtility
     public static function tad_breadcrumb($cate_sn = '0', $cate_path_array = [], $url_page = 'index.php', $page_cate_name = 'csn', $cate_title_name = 'title', $last = ''): string
     {
         $item = '';
-        if (is_array($cate_path_array)) {
+        if (\is_array($cate_path_array)) {
             foreach ($cate_path_array as $path_cate_sn => $cate) {
                 $url = ($cate_sn == $path_cate_sn) ? "<a href='{$url_page}?{$page_cate_name}={$path_cate_sn}'>{$cate[$cate_title_name]}</a>" : "<a href='{$url_page}?{$page_cate_name}={$path_cate_sn}'>{$cate[$cate_title_name]}</a>";
                 $active = ($cate_sn == $path_cate_sn) ? 'active' : '';
@@ -240,16 +240,16 @@ class Utility extends Common\SysUtility
     public static function setup_meta($title = '', $content = '', $image = ''): void
     {
         global $xoTheme, $xoopsTpl;
-        if (is_object($xoTheme)) {
+        if (\is_object($xoTheme)) {
             $xoTheme->addMeta('meta', 'keywords', $title);
-            $xoTheme->addMeta('meta', 'description', strip_tags($content));
+            $xoTheme->addMeta('meta', 'description', \strip_tags($content));
         } else {
             $xoopsTpl->assign('xoops_meta_keywords', 'keywords', $title);
-            $xoopsTpl->assign('xoops_meta_description', strip_tags($content));
+            $xoopsTpl->assign('xoops_meta_description', \strip_tags($content));
         }
 
         $xoopsTpl->assign('fb_title', $title);
-        $xoopsTpl->assign('fb_description', strip_tags($content));
+        $xoopsTpl->assign('fb_description', \strip_tags($content));
         $xoopsTpl->assign('fb_image', $image);
         $xoopsTpl->assign('xoops_pagetitle', $title);
     }
@@ -257,8 +257,8 @@ class Utility extends Common\SysUtility
     //解決 basename 抓不到中文檔名的問題
     public static function get_basename($filename): string
     {
-        $filename = preg_replace('/^.+[\\\\\\/]/', '', $filename);
-        $filename = rtrim($filename, '/');
+        $filename = \preg_replace('/^.+[\\\\\\/]/', '', $filename);
+        $filename = \rtrim($filename, '/');
 
         return $filename;
     }
@@ -296,7 +296,7 @@ class Utility extends Common\SysUtility
     public static function web_error($sql, $file = '', $line = '', $force = false): void
     {
         global $xoopsDB, $xoopsModule, $xoopsUser;
-        xoops_loadLanguage('main', 'tadtools');
+        \xoops_loadLanguage('main', 'tadtools');
         $isAdmin = ($xoopsUser and $xoopsModule) ? $xoopsUser->isAdmin($xoopsModule->mid()) : false;
 
         $in_admin = (false !== mb_strpos($_SERVER['PHP_SELF'], '/admin/')) ? true : false;
@@ -323,7 +323,7 @@ class Utility extends Common\SysUtility
 
         $sql = 'select `tt_use_bootstrap`,`tt_bootstrap_color`,`tt_theme_kind` from `' . $xoopsDB->prefix('mtools_setup') . "`  where `tt_theme`='{$theme_set}'";
 
-        $result = $xoopsDB->query($sql) or redirect_header($_SERVER['PHP_SELF'], 3, $xoopsDB->error() . '<br>' . __FILE__ . ':' . __LINE__);
+        $result = $xoopsDB->query($sql) or \redirect_header($_SERVER['SCRIPT_NAME'], 3, $xoopsDB->error() . '<br>' . __FILE__ . ':' . __LINE__);
 
         [$tt_use_bootstrap, $tt_bootstrap_color, $tt_theme_kind] = $xoopsDB->fetchRow($result);
 
@@ -344,7 +344,7 @@ class Utility extends Common\SysUtility
                     $xoTheme->addStylesheet(XOOPS_URL . '/modules/mtools/bootstrap4/css/bootstrap.css');
                     $xoTheme->addStylesheet(XOOPS_URL . '/modules/mtools/css/xoops_adm4.css');
                 } else {
-                    $c = explode('/', $tt_bootstrap_color);
+                    $c = \explode('/', $tt_bootstrap_color);
                     if ('bootstrap4' === $c[0]) {
                         $xoTheme->addStylesheet(XOOPS_URL . '/modules/mtools/bootstrap4/css/bootstrap.css');
                         $xoTheme->addStylesheet(XOOPS_URL . '/modules/mtools/css/xoops_adm4.css');
@@ -378,24 +378,24 @@ class Utility extends Common\SysUtility
         $http = ($_SERVER['HTTPS']) ? 'https://' : 'http://';
         $port = 80 == $_SERVER['SERVER_PORT'] ? '' : ":{$_SERVER['SERVER_PORT']}";
         if (!isset($_SESSION['ez_url'])) {
-            $u = parse_url($http . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI']);
-            if (!empty($u['path']) and preg_match('/\/modules/', $u['path'])) {
-                $XMUrl = explode('/modules', $u['path']);
-            } elseif (!empty($u['path']) and preg_match('/\/themes/', $u['path'])) {
-                $XMUrl = explode('/themes', $u['path']);
-            } elseif (!empty($u['path']) and preg_match('/\/upgrade/', $u['path'])) {
-                $XMUrl = explode('/upgrade', $u['path']);
-            } elseif (!empty($u['path']) and preg_match('/\/include/', $u['path'])) {
-                $XMUrl = explode('/include', $u['path']);
-            } elseif (!empty($u['path']) and preg_match('/.php/', $u['path'])) {
-                $XMUrl[0] = dirname($u['path']);
+            $u = \parse_url($http . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI']);
+            if (!empty($u['path']) and \preg_match('/\/modules/', $u['path'])) {
+                $XMUrl = \explode('/modules', $u['path']);
+            } elseif (!empty($u['path']) and \preg_match('/\/themes/', $u['path'])) {
+                $XMUrl = \explode('/themes', $u['path']);
+            } elseif (!empty($u['path']) and \preg_match('/\/upgrade/', $u['path'])) {
+                $XMUrl = \explode('/upgrade', $u['path']);
+            } elseif (!empty($u['path']) and \preg_match('/\/include/', $u['path'])) {
+                $XMUrl = \explode('/include', $u['path']);
+            } elseif (!empty($u['path']) and \preg_match('/.php/', $u['path'])) {
+                $XMUrl[0] = \dirname($u['path']);
             } elseif (!empty($u['path'])) {
                 $XMUrl[0] = $u['path'];
             } else {
                 $XMUrl[0] = '';
             }
 
-            $my_url = str_replace('\\', '/', $XMUrl['0']);
+            $my_url = \str_replace('\\', '/', $XMUrl['0']);
             if ('/' === mb_substr($my_url, -1)) {
                 $my_url = mb_substr($my_url, 0, -1);
             }
@@ -409,14 +409,14 @@ class Utility extends Common\SysUtility
     //自動取得實體位置
     public static function get_xoops_path()
     {
-        if (preg_match('/\/modules/', $_SERVER['SCRIPT_FILENAME'])) {
-            $XMPath = explode('/modules', $_SERVER['SCRIPT_FILENAME']);
+        if (\preg_match('/\/modules/', $_SERVER['SCRIPT_FILENAME'])) {
+            $XMPath = \explode('/modules', $_SERVER['SCRIPT_FILENAME']);
             $root_path = $XMPath[0];
-        } elseif (preg_match('/\/themes/', $_SERVER['SCRIPT_FILENAME'])) {
-            $XMPath = explode('/themes', $_SERVER['SCRIPT_FILENAME']);
+        } elseif (\preg_match('/\/themes/', $_SERVER['SCRIPT_FILENAME'])) {
+            $XMPath = \explode('/themes', $_SERVER['SCRIPT_FILENAME']);
             $root_path = $XMPath[0];
         } else {
-            $root_path = dirname($_SERVER['SCRIPT_FILENAME']);
+            $root_path = \dirname($_SERVER['SCRIPT_FILENAME']);
         }
 
         return $root_path;
@@ -425,9 +425,9 @@ class Utility extends Common\SysUtility
     public static function auto_link($text)
     {
         $pattern = '/(((http[s]?:\/\/(.+(:.+)?@)?)|(www\.))[a-z0-9](([-a-z0-9]+\.)*\.[a-z]{2,})?\/?[a-z0-9.,_\/~#&=:;%+!?-]+)/is';
-        $text = preg_replace($pattern, ' <a href="$1" target="_blank">$1</a>', $text);
+        $text = \preg_replace($pattern, ' <a href="$1" target="_blank">$1</a>', $text);
         // fix URLs without protocols
-        $text = preg_replace('/href="www/', 'href="http://www', $text);
+        $text = \preg_replace('/href="www/', 'href="http://www', $text);
         return $text;
     }
 
@@ -438,7 +438,7 @@ class Utility extends Common\SysUtility
         $urls = self::_autolink_find_URLS($text);
         if (!empty($urls)) {
             // i.e. there were some URLS found in the text
-            array_walk($urls, '_autolink_create_html_tags', ['target' => $target, 'nofollow' => $nofollow]);
+            \array_walk($urls, '\_autolink_create_html_tags', ['target' => $target, 'nofollow' => $nofollow]);
             $text = strtr($text, $urls);
         }
         // self::dd($text);
@@ -458,10 +458,10 @@ class Utility extends Common\SysUtility
         $pattern = "$scheme?(?(1)($ip|($subdomain)?$name$tld)|($www$name$tld))$the_rest";
 
         $pattern = '/' . $pattern . '/is';
-        $c = preg_match_all($pattern, $text, $m);
+        $c = \preg_match_all($pattern, $text, $m);
         unset($text, $scheme, $www, $ip, $subdomain, $name, $tld, $the_rest, $pattern);
         if ($c) {
-            return (array_flip($m[0]));
+            return (\array_flip($m[0]));
         }
 
         return ([]);
@@ -470,7 +470,7 @@ class Utility extends Common\SysUtility
     public static function _autolink_create_html_tags($value, $key, $other = null): void
     {
         $target = $nofollow = null;
-        if (is_array($other)) {
+        if (\is_array($other)) {
             $target = ($other['target'] ? " target=\"$other[target]\"" : null);
             $nofollow = ($other['nofollow'] ? ' rel="nofollow"' : null);
         }
@@ -544,9 +544,9 @@ class Utility extends Common\SysUtility
     {
         $imgurl = self::mk_qrcode_name($url);
         self::mk_dir(XOOPS_ROOT_PATH . '/uploads/qrcode');
-        if (!file_exists(XOOPS_ROOT_PATH . "/uploads/qrcode/{$imgurl}.gif")) {
+        if (!\file_exists(XOOPS_ROOT_PATH . "/uploads/qrcode/{$imgurl}.gif")) {
             include_once 'qrcode/qrcode.php';
-            $url = chk_qrcode_url($url);
+            $url = \chk_qrcode_url($url);
             $a = new \QR("{$_SERVER['HTTP_HOST']}{$url}");
             //die(XOOPS_ROOT_PATH."/uploads/qrcode/{$imgurl}.gif");
             file_put_contents(XOOPS_ROOT_PATH . "/uploads/qrcode/{$imgurl}.gif", $a->image(2));
@@ -557,27 +557,27 @@ class Utility extends Common\SysUtility
     public static function mk_qrcode_name($url = '')
     {
         $url = self::chk_qrcode_url($url);
-        $imgurl = str_replace(XOOPS_URL, '', $url);
-        $imgurl = str_replace('modules/', '', $imgurl);
-        $imgurl = str_replace('/', '_', $imgurl);
-        $imgurl = str_replace('.', '_', $imgurl);
-        $imgurl = str_replace('?', '_', $imgurl);
-        $imgurl = str_replace('&', '_', $imgurl);
-        $imgurl = str_replace('=', '_', $imgurl);
+        $imgurl = \str_replace(XOOPS_URL, '', $url);
+        $imgurl = \str_replace('modules/', '', $imgurl);
+        $imgurl = \str_replace('/', '_', $imgurl);
+        $imgurl = \str_replace('.', '_', $imgurl);
+        $imgurl = \str_replace('?', '_', $imgurl);
+        $imgurl = \str_replace('&', '_', $imgurl);
+        $imgurl = \str_replace('=', '_', $imgurl);
 
         return $imgurl;
     }
 
     public static function chk_qrcode_url($url): string
     {
-        $var = explode('?', $url);
+        $var = \explode('?', $url);
         if (empty($var[1])) {
             return $url;
         }
 
-        $vars = explode('&', $var[1]);
+        $vars = \explode('&', $var[1]);
         foreach ($vars as $v) {
-            [$key, $val] = explode('=', $v);
+            [$key, $val] = \explode('=', $v);
             if ('loadtime' === $key) {
                 continue;
             }
@@ -590,7 +590,7 @@ class Utility extends Common\SysUtility
             $varall[] = "{$key}={$val}";
         }
 
-        $var2 = implode('&', $varall);
+        $var2 = \implode('&', $varall);
         $url = "{$var[0]}?{$var2}";
 
         return $url;
@@ -613,7 +613,7 @@ if (empty($DBV) && '1' == $defaul) {
     //複選回復原始資料函數
     public static function chk2($default_array = '', $NEED_V = '', $default = 0): string
     {
-        if (in_array($NEED_V, $default_array)) {
+        if (\in_array($NEED_V, $default_array)) {
             return 'checked';
         }
 
@@ -645,7 +645,7 @@ if (empty($default_array) && '1' == $default) {
             $perm_name = $xoopsModule->dirname();
         }
         //取得群組權限功能
-        $gperm_handler = xoops_getHandler('groupperm');
+        $gperm_handler = \xoops_getHandler('groupperm');
 
         //權限項目編號
         $perm_itemid = (int) $perm_itemid;
@@ -664,12 +664,12 @@ if (empty($default_array) && '1' == $default) {
         if (empty($enable_group)) {
             $g_txt_all = $default_txt;
         } else {
-            $gs = explode(',', $enable_group);
+            $gs = \explode(',', $enable_group);
             $g_txt = [];
             foreach ($gs as $gid) {
                 $g_txt[] = $groups_array[$gid];
             }
-            $g_txt_all = implode($syb, $g_txt);
+            $g_txt_all = \implode($syb, $g_txt);
         }
 
         return $g_txt_all;
@@ -694,7 +694,7 @@ if (empty($default_array) && '1' == $default) {
         if (_CHARSET === 'UTF-8') {
             return $buffer;
         }
-        $buffer = (!function_exists('mb_convert_encoding')) ? iconv('Big5', 'UTF-8', $buffer) : mb_convert_encoding($buffer, 'UTF-8', 'Big5');
+        $buffer = (!\function_exists('mb_convert_encoding')) ? \iconv('Big5', 'UTF-8', $buffer) : mb_convert_encoding($buffer, 'UTF-8', 'Big5');
 
         return $buffer;
     }
@@ -706,7 +706,7 @@ if (empty($default_array) && '1' == $default) {
         $len = mb_strlen($str);
 
         for ($i = 0; $i < $len; $i++) {
-            $sbit = ord(mb_substr($str, $i, 1));
+            $sbit = \ord(mb_substr($str, $i, 1));
             if ($sbit < 128) {
                 //本字節為英文字符，不與理會
             } elseif ($sbit > 191 && $sbit < 224) {
@@ -732,7 +732,7 @@ if (empty($default_array) && '1' == $default) {
     {
         $os_charset = (PATH_SEPARATOR === ':') ? 'UTF-8' : 'Big5';
         if (_CHARSET != $os_charset) {
-            $new_str = 'web' === $OS_or_Web ? iconv($os_charset, _CHARSET, $str) : iconv(_CHARSET, $os_charset, $str);
+            $new_str = 'web' === $OS_or_Web ? \iconv($os_charset, _CHARSET, $str) : \iconv(_CHARSET, $os_charset, $str);
         }
         if (empty($new_str)) {
             $new_str = $str;
@@ -758,13 +758,13 @@ if (empty($default_array) && '1' == $default) {
                 $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 break;
         }
-        [$usec, $sec] = explode(' ', microtime());
+        [$usec, $sec] = \explode(' ', \microtime());
         $seed = (float) $sec + ((float) $usec * 100000);
         // die('seed=' . $seed);
-        mt_srand($seed);
+        \mt_srand($seed);
         $password = '';
         while (mb_strlen($password) < $len) {
-            $password .= mb_substr($chars, (mt_rand() % mb_strlen($chars)), 1);
+            $password .= mb_substr($chars, (\mt_rand() % mb_strlen($chars)), 1);
         }
 
         return $password;
@@ -773,9 +773,9 @@ if (empty($default_array) && '1' == $default) {
     //刪除整個目錄
     public static function rrmdir($path): bool
     {
-        return is_file($path) ?
-        @unlink($path) :
-        array_map('rrmdir', glob($path . '/*')) == @rmdir($path)
+        return \is_file($path) ?
+        @\unlink($path) :
+            \array_map('\rrmdir', \glob($path . '/*')) == @\rmdir($path)
         ;
     }
 
@@ -795,7 +795,7 @@ if (empty($default_array) && '1' == $default) {
             $bootstrap = $_SESSION['bootstrap'];
         }
 
-        $result = $xoopsDB->query($sql) or redirect_header($_SERVER['PHP_SELF'], 10, $xoopsDB->error() . '<br>' . __FILE__ . ':' . __LINE__ . "<br>$sql");
+        $result = $xoopsDB->query($sql) or \redirect_header($_SERVER['SCRIPT_NAME'], 10, $xoopsDB->error() . '<br>' . __FILE__ . ':' . __LINE__ . "<br>$sql");
         $total = $xoopsDB->getRowsNum($result);
 
         $navbar = new \XoopsModules\Tadtools\PageBar($total, $show_num, $page_list);
@@ -836,7 +836,7 @@ if (empty($default_array) && '1' == $default) {
     {
         global $xoopsUser, $xoopsModule, $xoopsModuleConfig;
 
-        xoops_loadLanguage('main', 'tadtools');
+        \xoops_loadLanguage('main', 'tadtools');
         $op = Request::getString('op');
 
         if ($xoopsModule) {
@@ -862,9 +862,9 @@ if (empty($default_array) && '1' == $default) {
         self::get_jquery();
 
         $options = "<li><a href='index.php' title='" . _TAD_HOME . "'><i class='fa fa-home'></i></a></li>";
-        if (is_array($interface_menu)) {
-            $basename = basename($_SERVER['SCRIPT_NAME']);
-            if (1 == count($interface_menu) and 'index.php' === mb_substr($_SERVER['REQUEST_URI'], -9)) {
+        if (\is_array($interface_menu)) {
+            $basename = \basename($_SERVER['SCRIPT_NAME']);
+            if (1 == \count($interface_menu) and 'index.php' === mb_substr($_SERVER['REQUEST_URI'], -9)) {
                 return;
             }
 
@@ -874,9 +874,9 @@ if (empty($default_array) && '1' == $default) {
                 }
 
                 $urlPath = (empty($moduleName) or mb_strpos($url, 'http://') === 0) ? $url : XOOPS_URL . "/modules/{$moduleName}/{$url}";
-                if (!empty($op) and false !== strpos($url, "?op=") and false !== strpos($url, "{$basename}?op={$op}")) {
+                if (!empty($op) and false !== \strpos($url, "?op=") and false !== \strpos($url, "{$basename}?op={$op}")) {
                     $active = "class='current' title='{$_SERVER['SCRIPT_NAME']}?op={$op}=={$url}'";
-                } elseif (!isset($op) and false !== strpos($_SERVER['SCRIPT_NAME'], $url)) {
+                } elseif (!isset($op) and false !== \strpos($_SERVER['SCRIPT_NAME'], $url)) {
                     $active = "class='current' title='hi'";
                 } else {
                     $active = '';
@@ -885,10 +885,10 @@ if (empty($default_array) && '1' == $default) {
             }
 
             if ($isAdmin and $module_id) {
-                $options .= "<li {$active}><a href='admin/index.php' title='" . sprintf(_TAD_ADMIN, $mod_name) . "'><i class='fa fa-wrench'></i></a></li>";
-                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=preferences&op=showmod&mod={$module_id}' title='" . sprintf(_TAD_CONFIG, $mod_name) . "'><i class='fa fa-edit'></i></a></li>";
-                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=modulesadmin&op=update&module={$moduleName}' title='" . sprintf(_TAD_UPDATE, $mod_name) . "'><i class='fa fa-refresh'></i></a></li>";
-                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=blocksadmin&op=list&filter=1&selgen={$module_id}&selmod=-2&selgrp=-1&selvis=-1' title='" . sprintf(_TAD_BLOCKS, $mod_name) . "'><i class='fa fa-th'></i></a></li>";
+                $options .= "<li {$active}><a href='admin/index.php' title='" . \sprintf(_TAD_ADMIN, $mod_name) . "'><i class='fa fa-wrench'></i></a></li>";
+                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=preferences&op=showmod&mod={$module_id}' title='" . \sprintf(_TAD_CONFIG, $mod_name) . "'><i class='fa fa-edit'></i></a></li>";
+                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=modulesadmin&op=update&module={$moduleName}' title='" . \sprintf(_TAD_UPDATE, $mod_name) . "'><i class='fa fa-refresh'></i></a></li>";
+                $options .= "<li {$active}><a href='" . XOOPS_URL . "/modules/system/admin.php?fct=blocksadmin&op=list&filter=1&selgen={$module_id}&selmod=-2&selgrp=-1&selvis=-1' title='" . \sprintf(_TAD_BLOCKS, $mod_name) . "'><i class='fa fa-th'></i></a></li>";
             }
         } else {
             return;
@@ -944,10 +944,10 @@ if (empty($default_array) && '1' == $default) {
 
     public static function TadToolsXoopsModuleConfig(): bool
     {
-        $modhandler = xoops_getHandler('module');
+        $modhandler = \xoops_getHandler('module');
         $TadToolsModule = $modhandler->getByDirname('tadtools');
-        if (is_object($TadToolsModule)) {
-            $config_handler = xoops_getHandler('config');
+        if (\is_object($TadToolsModule)) {
+            $config_handler = \xoops_getHandler('config');
             $TadToolsModuleConfig = $config_handler->getConfigsByCat(0, $TadToolsModule->getVar('mid'));
 
             return $TadToolsModuleConfig;
@@ -1014,56 +1014,56 @@ $xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
         switch (true) {
             // using a switch against the following statements which could return true is more efficient than the previous method of using if statements
 
-            case (preg_match('/ipad/i', $user_agent)): // we find the word ipad in the user agent
+            case (\preg_match('/ipad/i', $user_agent)): // we find the word ipad in the user agent
                 $mobile_browser = $ipad; // mobile browser is either true or false depending on the setting of ipad when calling the function
                 $status = 'Apple iPad';
                 if (mb_strpos($ipad, 'http') === 0) { // does the value of ipad resemble a url
                     $mobileredirect = $ipad; // set the mobile redirect url to the url value stored in the ipad value
                 } // ends the if for ipad being a url
                 break; // break out and skip the rest if we've had a match on the ipad // this goes before the iphone to catch it else it would return on the iphone instead
-            case (preg_match('/ipod/i', $user_agent) || preg_match('/iphone/i', $user_agent)): // we find the words iphone or ipod in the user agent
+            case (\preg_match('/ipod/i', $user_agent) || \preg_match('/iphone/i', $user_agent)): // we find the words iphone or ipod in the user agent
                 $mobile_browser = $iphone; // mobile browser is either true or false depending on the setting of iphone when calling the function
                 $status = 'Apple';
                 if (mb_strpos($iphone, 'http') === 0) { // does the value of iphone resemble a url
                     $mobileredirect = $iphone; // set the mobile redirect url to the url value stored in the iphone value
                 } // ends the if for iphone being a url
                 break; // break out and skip the rest if we've had a match on the iphone or ipod
-            case (preg_match('/android/i', $user_agent)): // we find android in the user agent
+            case (\preg_match('/android/i', $user_agent)): // we find android in the user agent
                 $mobile_browser = $android; // mobile browser is either true or false depending on the setting of android when calling the function
                 $status = 'Android';
                 if (mb_strpos($android, 'http') === 0) { // does the value of android resemble a url
                     $mobileredirect = $android; // set the mobile redirect url to the url value stored in the android value
                 } // ends the if for android being a url
                 break; // break out and skip the rest if we've had a match on android
-            case (preg_match('/opera mini/i', $user_agent)): // we find opera mini in the user agent
+            case (\preg_match('/opera mini/i', $user_agent)): // we find opera mini in the user agent
                 $mobile_browser = $opera; // mobile browser is either true or false depending on the setting of opera when calling the function
                 $status = 'Opera';
                 if (mb_strpos($opera, 'http') === 0) { // does the value of opera resemble a rul
                     $mobileredirect = $opera; // set the mobile redirect url to the url value stored in the opera value
                 } // ends the if for opera being a url
                 break; // break out and skip the rest if we've had a match on opera
-            case (preg_match('/blackberry/i', $user_agent)): // we find blackberry in the user agent
+            case (\preg_match('/blackberry/i', $user_agent)): // we find blackberry in the user agent
                 $mobile_browser = $blackberry; // mobile browser is either true or false depending on the setting of blackberry when calling the function
                 $status = 'Blackberry';
                 if (mb_strpos($blackberry, 'http') === 0) { // does the value of blackberry resemble a rul
                     $mobileredirect = $blackberry; // set the mobile redirect url to the url value stored in the blackberry value
                 } // ends the if for blackberry being a url
                 break; // break out and skip the rest if we've had a match on blackberry
-            case (preg_match('/(pre\/|palm os|palm|hiptop|avantgo|plucker|xiino|blazer|elaine)/i', $user_agent)): // we find palm os in the user agent - the i at the end makes it case insensitive
+            case (\preg_match('/(pre\/|palm os|palm|hiptop|avantgo|plucker|xiino|blazer|elaine)/i', $user_agent)): // we find palm os in the user agent - the i at the end makes it case insensitive
                 $mobile_browser = $palm; // mobile browser is either true or false depending on the setting of palm when calling the function
                 $status = 'Palm';
                 if (mb_strpos($palm, 'http') === 0) { // does the value of palm resemble a rul
                     $mobileredirect = $palm; // set the mobile redirect url to the url value stored in the palm value
                 } // ends the if for palm being a url
                 break; // break out and skip the rest if we've had a match on palm os
-            case (preg_match('/(iris|3g_t|windows ce|opera mobi|windows ce; smartphone;|windows ce; iemobile)/i', $user_agent)): // we find windows mobile in the user agent - the i at the end makes it case insensitive
+            case (\preg_match('/(iris|3g_t|windows ce|opera mobi|windows ce; smartphone;|windows ce; iemobile)/i', $user_agent)): // we find windows mobile in the user agent - the i at the end makes it case insensitive
                 $mobile_browser = $windows; // mobile browser is either true or false depending on the setting of windows when calling the function
                 $status = 'Windows Smartphone';
                 if (mb_strpos($windows, 'http') === 0) { // does the value of windows resemble a rul
                     $mobileredirect = $windows; // set the mobile redirect url to the url value stored in the windows value
                 } // ends the if for windows being a url
                 break; // break out and skip the rest if we've had a match on windows
-            case (preg_match('/(mini 9.5|vx1000|lge |m800|e860|u940|ux840|compal|wireless| mobi|ahong|lg380|lgku|lgu900|lg210|lg47|lg920|lg840|lg370|sam-r|mg50|s55|g83|t66|vx400|mk99|d615|d763|el370|sl900|mp500|samu3|samu4|vx10|xda_|samu5|samu6|samu7|samu9|a615|b832|m881|s920|n210|s700|c-810|_h797|mob-x|sk16d|848b|mowser|s580|r800|471x|v120|rim8|c500foma:|160x|x160|480x|x640|t503|w839|i250|sprint|w398samr810|m5252|c7100|mt126|x225|s5330|s820|htil-g1|fly v71|s302|-x113|novarra|k610i|-three|8325rc|8352rc|sanyo|vx54|c888|nx250|n120|mtk |c5588|s710|t880|c5005|i;458x|p404i|s210|c5100|teleca|s940|c500|s590|foma|samsu|vx8|vx9|a1000|_mms|myx|a700|gu1100|bc831|e300|ems100|me701|me702m-three|sd588|s800|8325rc|ac831|mw200|brew |d88|htc\/|htc_touch|355x|m50|km100|d736|p-9521|telco|sl74|ktouch|m4u\/|me702|8325rc|kddi|phone|lg |sonyericsson|samsung|240x|x320|vx10|nokia|sony cmd|motorola|up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|psp|treo)/i', $user_agent)): // check if any of the values listed create a match on the user agent - these are some of the most common terms used in agents to identify them as being mobile devices - the i at the end makes it case insensitive
+            case (\preg_match('/(mini 9.5|vx1000|lge |m800|e860|u940|ux840|compal|wireless| mobi|ahong|lg380|lgku|lgu900|lg210|lg47|lg920|lg840|lg370|sam-r|mg50|s55|g83|t66|vx400|mk99|d615|d763|el370|sl900|mp500|samu3|samu4|vx10|xda_|samu5|samu6|samu7|samu9|a615|b832|m881|s920|n210|s700|c-810|_h797|mob-x|sk16d|848b|mowser|s580|r800|471x|v120|rim8|c500foma:|160x|x160|480x|x640|t503|w839|i250|sprint|w398samr810|m5252|c7100|mt126|x225|s5330|s820|htil-g1|fly v71|s302|-x113|novarra|k610i|-three|8325rc|8352rc|sanyo|vx54|c888|nx250|n120|mtk |c5588|s710|t880|c5005|i;458x|p404i|s210|c5100|teleca|s940|c500|s590|foma|samsu|vx8|vx9|a1000|_mms|myx|a700|gu1100|bc831|e300|ems100|me701|me702m-three|sd588|s800|8325rc|ac831|mw200|brew |d88|htc\/|htc_touch|355x|m50|km100|d736|p-9521|telco|sl74|ktouch|m4u\/|me702|8325rc|kddi|phone|lg |sonyericsson|samsung|240x|x320|vx10|nokia|sony cmd|motorola|up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|psp|treo)/i', $user_agent)): // check if any of the values listed create a match on the user agent - these are some of the most common terms used in agents to identify them as being mobile devices - the i at the end makes it case insensitive
                 $mobile_browser = true; // set mobile browser to true
                 $status = 'Mobile matched on piped preg_match';
                 break; // break out and skip the rest if we've preg_match on the user agent returned true
@@ -1075,9 +1075,9 @@ $xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
                 $mobile_browser = true; // set mobile browser to true
                 $status = 'Mobile matched on profile headers being set';
                 break; // break out and skip the final step if we've had a return true on the mobile specfic headers
-            case (in_array(mb_strtolower(mb_substr($user_agent, 0, 4)), [
+            case (\in_array(mb_strtolower(mb_substr($user_agent, 0, 4)), [
                     '1207' => '1207', '3gso' => '3gso', '4thp' => '4thp', '501i' => '501i', '502i' => '502i', '503i' => '503i', '504i' => '504i', '505i' => '505i', '506i' => '506i', '6310' => '6310', '6590' => '6590', '770s' => '770s', '802s' => '802s', 'a wa' => 'a wa', 'acer' => 'acer', 'acs-' => 'acs-', 'airn' => 'airn', 'alav' => 'alav', 'asus' => 'asus', 'attw' => 'attw', 'au-m' => 'au-m', 'aur ' => 'aur ', 'aus ' => 'aus ', 'abac' => 'abac', 'acoo' => 'acoo', 'aiko' => 'aiko', 'alco' => 'alco', 'alca' => 'alca', 'amoi' => 'amoi', 'anex' => 'anex', 'anny' => 'anny', 'anyw' => 'anyw', 'aptu' => 'aptu', 'arch' => 'arch', 'argo' => 'argo', 'bell' => 'bell', 'bird' => 'bird', 'bw-n' => 'bw-n', 'bw-u' => 'bw-u', 'beck' => 'beck', 'benq' => 'benq', 'bilb' => 'bilb', 'blac' => 'blac', 'c55/' => 'c55/', 'cdm-' => 'cdm-', 'chtm' => 'chtm', 'capi' => 'capi', 'cond' => 'cond', 'craw' => 'craw', 'dall' => 'dall', 'dbte' => 'dbte', 'dc-s' => 'dc-s', 'dica' => 'dica', 'ds-d' => 'ds-d', 'ds12' => 'ds12', 'dait' => 'dait', 'devi' => 'devi', 'dmob' => 'dmob', 'doco' => 'doco', 'dopo' => 'dopo', 'el49' => 'el49', 'erk0' => 'erk0', 'esl8' => 'esl8', 'ez40' => 'ez40', 'ez60' => 'ez60', 'ez70' => 'ez70', 'ezos' => 'ezos', 'ezze' => 'ezze', 'elai' => 'elai', 'emul' => 'emul', 'eric' => 'eric', 'ezwa' => 'ezwa', 'fake' => 'fake', 'fly-' => 'fly-', 'fly_' => 'fly_', 'g-mo' => 'g-mo', 'g1 u' => 'g1 u', 'g560' => 'g560', 'gf-5' => 'gf-5', 'grun' => 'grun', 'gene' => 'gene', 'go.w' => 'go.w', 'good' => 'good', 'grad' => 'grad', 'hcit' => 'hcit', 'hd-m' => 'hd-m', 'hd-p' => 'hd-p', 'hd-t' => 'hd-t', 'hei-' => 'hei-', 'hp i' => 'hp i', 'hpip' => 'hpip', 'hs-c' => 'hs-c', 'htc ' => 'htc ', 'htc-' => 'htc-', 'htca' => 'htca', 'htcg' => 'htcg', 'htcp' => 'htcp', 'htcs' => 'htcs', 'htct' => 'htct', 'htc_' => 'htc_', 'haie' => 'haie', 'hita' => 'hita', 'huaw' => 'huaw', 'hutc' => 'hutc', 'i-20' => 'i-20', 'i-go' => 'i-go', 'i-ma' => 'i-ma', 'i230' => 'i230', 'iac' => 'iac', 'iac-' => 'iac-', 'iac/' => 'iac/', 'ig01' => 'ig01', 'im1k' => 'im1k', 'inno' => 'inno', 'iris' => 'iris', 'jata' => 'jata', 'java' => 'java', 'kddi' => 'kddi', 'kgt' => 'kgt', 'kgt/' => 'kgt/', 'kpt ' => 'kpt ', 'kwc-' => 'kwc-', 'klon' => 'klon', 'lexi' => 'lexi', 'lg g' => 'lg g', 'lg-a' => 'lg-a', 'lg-b' => 'lg-b', 'lg-c' => 'lg-c', 'lg-d' => 'lg-d', 'lg-f' => 'lg-f', 'lg-g' => 'lg-g', 'lg-k' => 'lg-k', 'lg-l' => 'lg-l', 'lg-m' => 'lg-m', 'lg-o' => 'lg-o', 'lg-p' => 'lg-p', 'lg-s' => 'lg-s', 'lg-t' => 'lg-t', 'lg-u' => 'lg-u', 'lg-w' => 'lg-w', 'lg/k' => 'lg/k', 'lg/l' => 'lg/l', 'lg/u' => 'lg/u', 'lg50' => 'lg50', 'lg54' => 'lg54', 'lge-' => 'lge-', 'lge/' => 'lge/', 'lynx' => 'lynx', 'leno' => 'leno', 'm1-w' => 'm1-w', 'm3ga' => 'm3ga', 'm50/' => 'm50/', 'maui' => 'maui', 'mc01' => 'mc01', 'mc21' => 'mc21', 'mcca' => 'mcca', 'medi' => 'medi', 'meri' => 'meri', 'mio8' => 'mio8', 'mioa' => 'mioa', 'mo01' => 'mo01', 'mo02' => 'mo02', 'mode' => 'mode', 'modo' => 'modo', 'mot ' => 'mot ', 'mot-' => 'mot-', 'mt50' => 'mt50', 'mtp1' => 'mtp1', 'mtv ' => 'mtv ', 'mate' => 'mate', 'maxo' => 'maxo', 'merc' => 'merc', 'mits' => 'mits', 'mobi' => 'mobi', 'motv' => 'motv', 'mozz' => 'mozz', 'n100' => 'n100', 'n101' => 'n101', 'n102' => 'n102', 'n202' => 'n202', 'n203' => 'n203', 'n300' => 'n300', 'n302' => 'n302', 'n500' => 'n500', 'n502' => 'n502', 'n505' => 'n505', 'n700' => 'n700', 'n701' => 'n701', 'n710' => 'n710', 'nec-' => 'nec-', 'nem-' => 'nem-', 'newg' => 'newg', 'neon' => 'neon', 'netf' => 'netf', 'noki' => 'noki', 'nzph' => 'nzph', 'o2 x' => 'o2 x', 'o2-x' => 'o2-x', 'opwv' => 'opwv', 'owg1' => 'owg1', 'opti' => 'opti', 'oran' => 'oran', 'p800' => 'p800', 'pand' => 'pand', 'pg-1' => 'pg-1', 'pg-2' => 'pg-2', 'pg-3' => 'pg-3', 'pg-6' => 'pg-6', 'pg-8' => 'pg-8', 'pg-c' => 'pg-c', 'pg13' => 'pg13', 'phil' => 'phil', 'pn-2' => 'pn-2', 'pt-g' => 'pt-g', 'palm' => 'palm', 'pana' => 'pana', 'pire' => 'pire', 'pock' => 'pock', 'pose' => 'pose', 'psio' => 'psio', 'qa-a' => 'qa-a', 'qc-2' => 'qc-2', 'qc-3' => 'qc-3', 'qc-5' => 'qc-5', 'qc-7' => 'qc-7', 'qc07' => 'qc07', 'qc12' => 'qc12', 'qc21' => 'qc21', 'qc32' => 'qc32', 'qc60' => 'qc60', 'qci-' => 'qci-', 'qwap' => 'qwap', 'qtek' => 'qtek', 'r380' => 'r380', 'r600' => 'r600', 'raks' => 'raks', 'rim9' => 'rim9', 'rove' => 'rove', 's55/' => 's55/', 'sage' => 'sage', 'sams' => 'sams', 'sc01' => 'sc01', 'sch-' => 'sch-', 'scp-' => 'scp-', 'sdk/' => 'sdk/', 'se47' => 'se47', 'sec-' => 'sec-', 'sec0' => 'sec0', 'sec1' => 'sec1', 'semc' => 'semc', 'sgh-' => 'sgh-', 'shar' => 'shar', 'sie-' => 'sie-', 'sk-0' => 'sk-0', 'sl45' => 'sl45', 'slid' => 'slid', 'smb3' => 'smb3', 'smt5' => 'smt5', 'sp01' => 'sp01', 'sph-' => 'sph-', 'spv ' => 'spv ', 'spv-' => 'spv-', 'sy01' => 'sy01', 'samm' => 'samm', 'sany' => 'sany', 'sava' => 'sava', 'scoo' => 'scoo', 'send' => 'send', 'siem' => 'siem', 'smar' => 'smar', 'smit' => 'smit', 'soft' => 'soft', 'sony' => 'sony', 't-mo' => 't-mo', 't218' => 't218', 't250' => 't250', 't600' => 't600', 't610' => 't610', 't618' => 't618', 'tcl-' => 'tcl-', 'tdg-' => 'tdg-', 'telm' => 'telm', 'tim-' => 'tim-', 'ts70' => 'ts70', 'tsm-' => 'tsm-', 'tsm3' => 'tsm3', 'tsm5' => 'tsm5', 'tx-9' => 'tx-9', 'tagt' => 'tagt', 'talk' => 'talk', 'teli' => 'teli', 'topl' => 'topl', 'hiba' => 'hiba', 'up.b' => 'up.b', 'upg1' => 'upg1', 'utst' => 'utst', 'v400' => 'v400', 'v750' => 'v750', 'veri' => 'veri', 'vk-v' => 'vk-v', 'vk40' => 'vk40', 'vk50' => 'vk50', 'vk52' => 'vk52', 'vk53' => 'vk53', 'vm40' => 'vm40', 'vx98' => 'vx98', 'virg' => 'virg', 'vite' => 'vite', 'voda' => 'voda', 'vulc' => 'vulc', 'w3c ' => 'w3c ', 'w3c-' => 'w3c-', 'wapj' => 'wapj', 'wapp' => 'wapp', 'wapu' => 'wapu', 'wapm' => 'wapm', 'wig ' => 'wig ', 'wapi' => 'wapi', 'wapr' => 'wapr', 'wapv' => 'wapv', 'wapy' => 'wapy', 'wapa' => 'wapa', 'waps' => 'waps', 'wapt' => 'wapt', 'winc' => 'winc', 'winw' => 'winw', 'wonu' => 'wonu', 'x700' => 'x700', 'xda2' => 'xda2', 'xdag' => 'xdag', 'yas-' => 'yas-', 'your' => 'your', 'zte-' => 'zte-', 'zeto' => 'zeto', 'acs-' => 'acs-', 'alav' => 'alav', 'alca' => 'alca', 'amoi' => 'amoi', 'aste' => 'aste', 'audi' => 'audi', 'avan' => 'avan', 'benq' => 'benq', 'bird' => 'bird', 'blac' => 'blac', 'blaz' => 'blaz', 'brew' => 'brew', 'brvw' => 'brvw', 'bumb' => 'bumb', 'ccwa' => 'ccwa', 'cell' => 'cell', 'cldc' => 'cldc', 'cmd-' => 'cmd-', 'dang' => 'dang', 'doco' => 'doco', 'eml2' => 'eml2', 'eric' => 'eric', 'fetc' => 'fetc', 'hipt' => 'hipt', 'http' => 'http', 'ibro' => 'ibro', 'idea' => 'idea', 'ikom' => 'ikom', 'inno' => 'inno', 'ipaq' => 'ipaq', 'jbro' => 'jbro', 'jemu' => 'jemu', 'java' => 'java', 'jigs' => 'jigs', 'kddi' => 'kddi', 'keji' => 'keji', 'kyoc' => 'kyoc', 'kyok' => 'kyok', 'leno' => 'leno', 'lg-c' => 'lg-c', 'lg-d' => 'lg-d', 'lg-g' => 'lg-g', 'lge-' => 'lge-', 'libw' => 'libw', 'm-cr' => 'm-cr', 'maui' => 'maui', 'maxo' => 'maxo', 'midp' => 'midp', 'mits' => 'mits', 'mmef' => 'mmef', 'mobi' => 'mobi', 'mot-' => 'mot-', 'moto' => 'moto', 'mwbp' => 'mwbp', 'mywa' => 'mywa', 'nec-' => 'nec-', 'newt' => 'newt', 'nok6' => 'nok6', 'noki' => 'noki', 'o2im' => 'o2im', 'opwv' => 'opwv', 'palm' => 'palm', 'pana' => 'pana', 'pant' => 'pant', 'pdxg' => 'pdxg', 'phil' => 'phil', 'play' => 'play', 'pluc' => 'pluc', 'port' => 'port', 'prox' => 'prox', 'qtek' => 'qtek', 'qwap' => 'qwap', 'rozo' => 'rozo', 'sage' => 'sage', 'sama' => 'sama', 'sams' => 'sams', 'sany' => 'sany', 'sch-' => 'sch-', 'sec-' => 'sec-', 'send' => 'send', 'seri' => 'seri', 'sgh-' => 'sgh-', 'shar' => 'shar', 'sie-' => 'sie-', 'siem' => 'siem', 'smal' => 'smal', 'smar' => 'smar', 'sony' => 'sony', 'sph-' => 'sph-', 'symb' => 'symb', 't-mo' => 't-mo', 'teli' => 'teli', 'tim-' => 'tim-', 'tosh' => 'tosh', 'treo' => 'treo', 'tsm-' => 'tsm-', 'upg1' => 'upg1', 'upsi' => 'upsi', 'vk-v' => 'vk-v', 'voda' => 'voda', 'vx52' => 'vx52', 'vx53' => 'vx53', 'vx60' => 'vx60', 'vx61' => 'vx61', 'vx70' => 'vx70', 'vx80' => 'vx80', 'vx81' => 'vx81', 'vx83' => 'vx83', 'vx85' => 'vx85', 'wap-' => 'wap-', 'wapa' => 'wapa', 'wapi' => 'wapi', 'wapp' => 'wapp', 'wapr' => 'wapr', 'webc' => 'webc', 'whit' => 'whit', 'winw' => 'winw', 'wmlb' => 'wmlb', 'xda-' => 'xda-',
-                ], true)): // check against a list of trimmed user agents to see if we find a match
+                ],          true)): // check against a list of trimmed user agents to see if we find a match
                 $mobile_browser = true; // set mobile browser to true
                 $status = 'Mobile matched on in_array';
                 break; // break even though it's the last statement in the switch so there's nothing to break away from but it seems better to include it than exclude it
@@ -1093,7 +1093,7 @@ $xoTheme->addScript('browse.php?Frameworks/jquery/jquery.js');
 
         // if redirect (either the value of the mobile or desktop redirect depending on the value of $mobile_browser) is true redirect else we return the status of $mobile_browser
         if ($redirect = (true == $mobile_browser) ? $mobileredirect : $desktopredirect) {
-            header('Location: ' . $redirect); // redirect to the right url for this device
+            \header('Location: ' . $redirect); // redirect to the right url for this device
             exit;
         }
         // a couple of folkas have asked about the status - that's there to help you debug and understand what the script is doing

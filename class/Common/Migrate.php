@@ -12,7 +12,9 @@ namespace XoopsModules\Mtools\Common;
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
-use \XoopsModules\Mtools\Common;
+use \XoopsModules\Mtools\{
+    Common\Configurator
+};
 
 /**
  * Class Migrate synchronize existing tables with target schema
@@ -20,7 +22,7 @@ use \XoopsModules\Mtools\Common;
  * @category  Migrate
  * @author    Richard Griffith <richard@geekwright.com>
  * @copyright 2016 XOOPS Project (https://xoops.org)
- * @license   GNU GPL 2 or later (http://www.gnu.org/licenses/gpl-2.0.html)
+ * @license   GNU GPL 2 or later (https://www.gnu.org/licenses/gpl-2.0.html)
  * @link      https://xoops.org
  */
 class Migrate extends \Xmf\Database\Migrate
@@ -29,7 +31,7 @@ class Migrate extends \Xmf\Database\Migrate
 
     /**
      * Migrate constructor.
-     * @param \XoopsModules\Mtools\Common\Configurator|null $configurator
+     * @param Configurator|null $configurator
      */
     public function __construct(Common\Configurator $configurator = null)
     {

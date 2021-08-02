@@ -82,11 +82,11 @@ class LetterChoice
         $this->field_name = null === $field_name ? $this->objHandler->identifierName : $field_name;
         //        $this->alphabet   = (count($alphabet) > 0) ? $alphabet : range('a', 'z'); // is there a way to get locale alphabet?
         //        $this->alphabet       = getLocalAlphabet();
-        $this->alphabet = require dirname(__DIR__, 2) . '/language/' . $GLOBALS['xoopsConfig']['language'] . '/alphabet.php';
+        $this->alphabet = require \dirname(__DIR__, 2) . '/language/' . $GLOBALS['xoopsConfig']['language'] . '/alphabet.php';
         //        $this->modHelper->loadLanguage('alphabet');
         $this->arg_name = $arg_name;
         $this->url      = null === $url ? $_SERVER['SCRIPT_NAME'] : $url;
-        if ('' !== $extra_arg && ('&amp;' !== substr($extra_arg, -5) || '&' !== substr($extra_arg, -1))) {
+        if ('' !== $extra_arg && ('&amp;' !== \substr($extra_arg, -5) || '&' !== \substr($extra_arg, -1))) {
             $this->extra = '&amp;' . $extra_arg;
         }
         $this->caseSensitive = $caseSensitive;
@@ -101,12 +101,12 @@ class LetterChoice
      */
     public function render($alphaCount = null, $howmanyother = null): string
     {
-        $moduleDirName      = basename(dirname(__DIR__, 2));
+        $moduleDirName      = \basename(\dirname(__DIR__, 2));
         $moduleDirNameUpper = mb_strtoupper($moduleDirName);
-        xoops_loadLanguage('common', $moduleDirName);
-        xoops_loadLanguage('alphabet', $moduleDirName);
-        $all   = constant('CO_' . $moduleDirNameUpper . '_ALL');
-        $other = constant('CO_' . $moduleDirNameUpper . '_OTHER');
+        \xoops_loadLanguage('common', $moduleDirName);
+        \xoops_loadLanguage('alphabet', $moduleDirName);
+        $all   = \constant('CO_' . $moduleDirNameUpper . '_ALL');
+        $other = \constant('CO_' . $moduleDirNameUpper . '_OTHER');
 
         $ret = '';
         //
@@ -130,8 +130,8 @@ class LetterChoice
             $letter_array = [];
             $letter_array['letter'] = $letter;
             if (!$this->caseSensitive) {
-                if (isset($countsByLetters[strtoupper($letter)])) {
-                    $letter_array['count']  = $countsByLetters[strtoupper($letter)];
+                if (isset($countsByLetters[\strtoupper($letter)])) {
+                    $letter_array['count']  = $countsByLetters[\strtoupper($letter)];
                     $letter_array['url']    = $this->url . '?' . $this->arg_name . '=' . $letter . $this->extra;
                 } else {
                     $letter_array['count']  = 0;
@@ -156,7 +156,7 @@ class LetterChoice
         $alphabetArray[$letter] = $letter_array;
 
         // render output
-        if (!isset($GLOBALS['xoTheme']) || !is_object($GLOBALS['xoTheme'])) {
+        if (!isset($GLOBALS['xoTheme']) || !\is_object($GLOBALS['xoTheme'])) {
             require_once $GLOBALS['xoops']->path('/class/theme.php');
             $GLOBALS['xoTheme'] = new \xos_opal_Theme();
         }

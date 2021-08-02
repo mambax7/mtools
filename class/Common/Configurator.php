@@ -17,11 +17,9 @@ namespace XoopsModules\Mtools\Common;
  * @copyright   XOOPS Project (https://xoops.org)
  * @license     http://www.fsf.org/copyleft/gpl.html GNU public license
  * @author      XOOPS Development Team
- * @package
- * @since       1.05
  */
 
-// require_once dirname(dirname(__DIR__)) . '/include/common.php';
+// require_once \dirname(__DIR__, 2) . '/include/common.php';
 
 /**
  * Class Configurator
@@ -47,10 +45,10 @@ class Configurator
      */
     public function __construct($dir = null)
     {
-        //        $moduleDirName      = basename(dirname(dirname(__DIR__)));
+        //        $moduleDirName      = \basename(\dirname(__DIR__, 2));
         //        $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
-        //        require dirname(dirname(__DIR__)) . '/config/config.php';
+        //        require \dirname(__DIR__, 2) . '/config/config.php';
         //        $config = getConfig();
 
         $config = require $dir . '/config/config.php';

@@ -11,13 +11,13 @@
 
 /**
  * @copyright    {@link https://xoops.org/ XOOPS Project}
- * @license      {@link http://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
- * @package
- * @since
- * @author       XOOPS Development Team
+ * @license      {@link https://www.gnu.org/licenses/gpl-2.0.html GNU GPL 2 or later}
+ * @author      XOOPS Development Team
  */
 
-use XoopsModules\Mtools\{Common\Configurator,
+use XoopsModules\Mtools\{
+    Common\Configurator,
+    Common\Migrate,
     Helper,
     Utility
 };
@@ -32,32 +32,20 @@ if ((!defined('XOOPS_ROOT_PATH')) || !($GLOBALS['xoopsUser'] instanceof \XoopsUs
 }
 
 /**
- * @param string $tablename
- *
- * @return bool
- */
-function tableExists($tablename)
-{
-    $result = $GLOBALS['xoopsDB']->queryF("SHOW TABLES LIKE '$tablename'");
-
-    return ($GLOBALS['xoopsDB']->getRowsNum($result) > 0);
-}
-
-/**
  * Prepares system prior to attempting to install module
  * @param \XoopsModule $module {@link XoopsModule}
  * @return bool true if ready to install, false if not
  */
 function xoops_module_pre_update_mtools(\XoopsModule $module)
 {
-    $moduleDirName = basename(dirname(__DIR__));
+    $moduleDirName = \basename(\dirname(__DIR__));
     $helper        = Helper::getInstance();
     $utility       = new Utility();
 
     $xoopsSuccess = $utility::checkVerXoops($module);
     $phpSuccess   = $utility::checkVerPhp($module);
 
-    $migrator = new \XoopsModules\Mtools\Common\Migrate();
+    $migrator = new Migrate();
     $migrator->synchronizeSchema();
 
     return $xoopsSuccess && $phpSuccess;
@@ -72,7 +60,7 @@ function xoops_module_pre_update_mtools(\XoopsModule $module)
  */
 function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = null)
 {
-    $moduleDirName      = basename(dirname(__DIR__));
+    $moduleDirName      = \basename(\dirname(__DIR__));
     $moduleDirNameUpper = mb_strtoupper($moduleDirName);
 
     $helper       = Helper::getInstance();
@@ -133,7 +121,7 @@ function xoops_module_update_mtools(\XoopsModule $module, $previousVersion = nul
 
         //  ---  COPY blank.png FILES ---------------
         if (count($configurator->copyBlankFiles) > 0) {
-            $file = dirname(__DIR__) . '/assets/images/blank.png';
+            $file = \dirname(__DIR__) . '/assets/images/blank.png';
             foreach (array_keys($configurator->copyBlankFiles) as $i) {
                 $dest = $configurator->copyBlankFiles[$i] . '/blank.png';
                 $utility::copyFile($file, $dest);
